@@ -2,7 +2,7 @@ import Toybox.Application;
 import Toybox.Lang;
 import Toybox.WatchUi;
 
-class FirstAppApp extends Application.AppBase {
+class MinimalismFaceApp extends Application.AppBase {
 
     function initialize() {
         AppBase.initialize();
@@ -18,11 +18,11 @@ class FirstAppApp extends Application.AppBase {
 
     // Return the initial view of your application here
     function getInitialView() as [Views] or [Views, InputDelegates] {
-        return [ new FirstAppView() ];
+        return [ new MinimalismFaceView() ];
     }
 
 }
 
-function getApp() as FirstAppApp {
-    return Application.getApp() as FirstAppApp;
+function getApp() as MinimalismFaceApp {
+    return Application.getApp() as MinimalismFaceApp;
 }

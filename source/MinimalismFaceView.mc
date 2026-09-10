@@ -3,7 +3,7 @@ import Toybox.Lang;
 import Toybox.System;
 import Toybox.WatchUi;
 
-class FirstAppView extends WatchUi.WatchFace {
+class MinimalismFaceView extends WatchUi.WatchFace {
 
     function initialize() {
         WatchFace.initialize();

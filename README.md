@@ -1,4 +1,4 @@
-FirstApp — Simple Watch Face
+MinimalismFace — Simple Watch Face
 
 Overview
 - A minimal Connect IQ watch face for Venu 3 that shows the current time and date.
@@ -13,13 +13,13 @@ Build & Run in the Simulator (command line)
 Build the .iq package:
 
 ```bash
-<SDK_PATH>/bin/monkeyc -f manifest.xml -o bin/FirstApp.iq -y
+<SDK_PATH>/bin/monkeyc -f manifest.xml -o bin/MinimalismFace.iq -y
 ```
 
 Run the simulator for Venu 3:
 
 ```bash
-<SDK_PATH>/bin/simulator -f bin/FirstApp.iq -d venu3
+<SDK_PATH>/bin/simulator -f bin/MinimalismFace.iq -d venu3
 ```
 
 Run in VS Code (recommended)
@@ -40,7 +40,7 @@ Install on a Venu 3 device
   https://developer.garmin.com/connect-iq/dev-guides/overview/
 
 Files of interest
-- `source/FirstAppView.mc` — watch face view; updates time and date labels.
+- `source/MinimalismFaceView.mc` — watch face view; updates time and date labels.
 - `resources/layouts/layout.xml` — layout definition for the watch face.
 - `manifest.xml` — app manifest (targets `venu3`).
 

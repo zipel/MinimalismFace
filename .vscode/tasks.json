@@ -4,14 +4,14 @@
         {
             "label": "monkeyc-build",
             "type": "shell",
-            "command": "${env:CONNECTIQ_SDK}/bin/monkeyc -f manifest.xml -o ${workspaceFolder}/bin/FirstApp.iq -y",
+            "command": "${env:CONNECTIQ_SDK}/bin/monkeyc -f manifest.xml -o ${workspaceFolder}/bin/MinimalismFace.iq -y",
             "presentation": { "reveal": "always" },
             "problemMatcher": []
         },
         {
             "label": "simulator-run",
             "type": "shell",
-            "command": "${env:CONNECTIQ_SDK}/bin/simulator -f ${workspaceFolder}/bin/FirstApp.iq -d venu3",
+            "command": "${env:CONNECTIQ_SDK}/bin/simulator -f ${workspaceFolder}/bin/MinimalismFace.iq -d venu3",
             "presentation": { "reveal": "always" },
             "problemMatcher": []
         },
