@@ -1,10 +1,16 @@
 import Toybox.Graphics;
 import Toybox.Lang;
 import Toybox.System;
-import Toybox.Math as Math;
+import Toybox.Math;
+import Toybox.Time;
+import Toybox.Time.Gregorian;
 import Toybox.WatchUi;
 
 class MinimalismFaceView extends WatchUi.WatchFace {
+
+    // True while the watch is in high-power mode (about 10 seconds after a wrist gesture).
+    // While asleep, onUpdate() is only called once a minute.
+    private var _isAwake as Boolean = true;
 
     function initialize() {
         WatchFace.initialize();
@@ -12,7 +18,7 @@ class MinimalismFaceView extends WatchUi.WatchFace {
 
     // Load your resources here
     function onLayout(dc as Dc) as Void {
-        // No static layout required; we'll draw directly in onUpdate/onPartialUpdate.
+        // No static layout required; we draw directly in onUpdate.
     }
 
     // Called when this View is brought to the foreground. Restore
@@ -23,7 +29,6 @@ class MinimalismFaceView extends WatchUi.WatchFace {
 
     // Update the view
     function onUpdate(dc as Dc) as Void {
-        // Draw full analog clock (includes seconds hand)
         dc.setAntiAlias(true);
         dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_BLACK);
         dc.clear();
@@ -35,50 +40,34 @@ class MinimalismFaceView extends WatchUi.WatchFace {
         var cy = h / 2;
         var radius = (w < h ? w : h) / 2 - 6;
 
-        // Draw outer circle
-        dc.setPenWidth(2);
-        dc.drawCircle(cx, cy, radius);
+        // Hand angles in degrees: 90 is 12 o'clock, decreasing clockwise
+        var hourAngleDeg = 90 - ((clockTime.hour % 12) * 30 + clockTime.min * 0.5);
+        var minuteAngleDeg = 90 - (clockTime.min * 6 + clockTime.sec * 0.1);
 
-        // Draw hour numbers 1..12
-        dc.setPenWidth(1);
-        for (var i = 1; i <= 12; i += 1) {
-            var angleDeg = 90 - ((i % 12) * 30);
-            var rad = angleDeg * Math.PI / 180.0;
-            var tx = cx + Math.cos(rad) * (radius * 0.78);
-            var ty = cy - Math.sin(rad) * (radius * 0.78);
-            var s = i.toString();
-            dc.drawText(tx, ty, Graphics.FONT_SMALL, s, Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
+        // AMOLED always-on mode has burn-in rules, so draw the reduced face instead
+        if (!_isAwake && needsBurnInProtection()) {
+            drawAlwaysOn(dc, cx, cy, radius, hourAngleDeg, minuteAngleDeg, clockTime.min);
+            return;
         }
 
-        // Compute hand angles
-        var hour = clockTime.hour % 12;
-        var minute = clockTime.min;
-        var second = clockTime.sec;
+        drawDial(dc, cx, cy, radius);
+        drawDate(dc, cx, cy, radius);
 
-        var hourAngleDeg = 90 - (hour * 30 + minute * 0.5);
-        var minuteAngleDeg = 90 - (minute * 6 + second * 0.1);
-        var secondAngleDeg = 90 - (second * 6);
+        dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
 
         // Hour hand
-        var ha = hourAngleDeg * Math.PI / 180.0;
-        var hx = cx + Math.cos(ha) * (radius * 0.5);
-        var hy = cy - Math.sin(ha) * (radius * 0.5);
         dc.setPenWidth(4);
-        dc.drawLine(cx, cy, hx, hy);
+        drawHand(dc, cx, cy, hourAngleDeg, 0, radius * 0.5);
 
         // Minute hand
-        var ma = minuteAngleDeg * Math.PI / 180.0;
-        var mx = cx + Math.cos(ma) * (radius * 0.75);
-        var my = cy - Math.sin(ma) * (radius * 0.75);
         dc.setPenWidth(3);
-        dc.drawLine(cx, cy, mx, my);
+        drawHand(dc, cx, cy, minuteAngleDeg, 0, radius * 0.75);
 
-        // Seconds hand (do not draw in low-power/always-on partial updates)
-        var sa = secondAngleDeg * Math.PI / 180.0;
-        var sx = cx + Math.cos(sa) * (radius * 0.85);
-        var sy = cy - Math.sin(sa) * (radius * 0.85);
-        dc.setPenWidth(1);
-        dc.drawLine(cx, cy, sx, sy);
+        // Seconds hand only while awake; asleep it would sit frozen between once-a-minute updates
+        if (_isAwake) {
+            dc.setPenWidth(1);
+            drawHand(dc, cx, cy, 90 - clockTime.sec * 6, 0, radius * 0.85);
+        }
 
         // center cap
         dc.fillCircle(cx, cy, 3);
@@ -90,32 +79,24 @@ class MinimalismFaceView extends WatchUi.WatchFace {
     function onHide() as Void {
     }
 
-    // The user has just looked at their watch. Timers and animations may be started here.
+    // The user has just looked at their watch: back to the full face, updated every second.
     function onExitSleep() as Void {
+        _isAwake = true;
+        WatchUi.requestUpdate();
     }
 
-    // Terminate any active timers and prepare for slow updates.
+    // The watch is entering low-power mode. Redraw right away so the always-on
+    // face replaces the bright one immediately, not at the next minute.
     function onEnterSleep() as Void {
+        _isAwake = false;
+        WatchUi.requestUpdate();
     }
 
-    // Partial updates are used in low power / always-on display modes.
-    // Only draw hour and minute hands here (no seconds) to save power.
-    function onPartialUpdate(dc as Dc) as Void {
-        dc.setAntiAlias(true);
-        dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_BLACK);
-        // Note: partial updates should restrict drawing to changed regions when possible.
-        dc.clear();
-
-        var clockTime = System.getClockTime();
-        var w = dc.getWidth();
-        var h = dc.getHeight();
-        var cx = w / 2;
-        var cy = h / 2;
-        var radius = (w < h ? w : h) / 2 - 6;
-
-        // Draw outer circle and numbers (static)
+    // Outer circle and hour numbers 1..12
+    private function drawDial(dc as Dc, cx as Number, cy as Number, radius as Number) as Void {
         dc.setPenWidth(2);
         dc.drawCircle(cx, cy, radius);
+
         dc.setPenWidth(1);
         for (var i = 1; i <= 12; i += 1) {
             var angleDeg = 90 - ((i % 12) * 30);
@@ -125,27 +106,44 @@ class MinimalismFaceView extends WatchUi.WatchFace {
             var s = i.toString();
             dc.drawText(tx, ty, Graphics.FONT_SMALL, s, Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
         }
+    }
 
-        // Draw hour and minute hands only
-        var hour = clockTime.hour % 12;
-        var minute = clockTime.min;
+    // Weekday and day of the month below the centre, e.g. "Thu 23"
+    private function drawDate(dc as Dc, cx as Number, cy as Number, radius as Number) as Void {
+        var info = Gregorian.info(Time.now(), Time.FORMAT_MEDIUM);
+        var dateStr = Lang.format("$1$ $2$", [info.day_of_week, info.day]);
+        dc.setColor(Graphics.COLOR_LT_GRAY, Graphics.COLOR_TRANSPARENT);
+        dc.drawText(cx, cy + radius * 0.4, Graphics.FONT_TINY, dateStr, Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
+    }
 
-        var hourAngleDeg = 90 - (hour * 30 + minute * 0.5);
-        var minuteAngleDeg = 90 - (minute * 6);
+    // Always-on face for AMOLED screens. Garmin requires it to stay under 10% of the
+    // screen's brightness and recommends avoiding pixels that stay lit, so this draws
+    // only thin grey hour and minute hands that start away from the pivot, and moves
+    // them to a different spot (within 2 px) every minute.
+    private function drawAlwaysOn(dc as Dc, cx as Number, cy as Number, radius as Number, hourAngleDeg as Numeric, minuteAngleDeg as Numeric, minute as Number) as Void {
+        var shift = minute % 9;
+        var x = cx + (shift % 3 - 1) * 2;
+        var y = cy + (shift / 3 - 1) * 2;
 
-        var ha = hourAngleDeg * Math.PI / 180.0;
-        var hx = cx + Math.cos(ha) * (radius * 0.5);
-        var hy = cy - Math.sin(ha) * (radius * 0.5);
-        dc.setPenWidth(4);
-        dc.drawLine(cx, cy, hx, hy);
-
-        var ma = minuteAngleDeg * Math.PI / 180.0;
-        var mx = cx + Math.cos(ma) * (radius * 0.75);
-        var my = cy - Math.sin(ma) * (radius * 0.75);
+        dc.setColor(Graphics.COLOR_LT_GRAY, Graphics.COLOR_TRANSPARENT);
         dc.setPenWidth(3);
-        dc.drawLine(cx, cy, mx, my);
+        drawHand(dc, x, y, hourAngleDeg, 10, radius * 0.5);
+        dc.setPenWidth(2);
+        drawHand(dc, x, y, minuteAngleDeg, 10, radius * 0.75);
+    }
 
-        dc.fillCircle(cx, cy, 3);
+    // Draws a hand along angleDeg, from `inner` to `outer` pixels out from the centre
+    private function drawHand(dc as Dc, cx as Numeric, cy as Numeric, angleDeg as Numeric, inner as Numeric, outer as Numeric) as Void {
+        var rad = angleDeg * Math.PI / 180.0;
+        var cos = Math.cos(rad);
+        var sin = Math.sin(rad);
+        dc.drawLine(cx + cos * inner, cy - sin * inner, cx + cos * outer, cy - sin * outer);
+    }
+
+    // True on screens (AMOLED) that need the always-on burn-in rules
+    private function needsBurnInProtection() as Boolean {
+        var settings = System.getDeviceSettings();
+        return (settings has :requiresBurnInProtection) && settings.requiresBurnInProtection;
     }
 
 }
