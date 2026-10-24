@@ -51,7 +51,7 @@ class MinimalismFaceView extends WatchUi.WatchFace {
         }
 
         drawDial(dc, cx, cy, radius);
-        drawDateWindow(dc, cx, cy, radius);
+        drawDate(dc, cx, cy, radius);
 
         dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
 
@@ -113,21 +113,12 @@ class MinimalismFaceView extends WatchUi.WatchFace {
         }
     }
 
-    // Date window at 3 o'clock, like on a classic watch: the day of the month as two digits
-    private function drawDateWindow(dc as Dc, cx as Number, cy as Number, radius as Number) as Void {
-        var font = Graphics.FONT_TINY;
-        var text = Gregorian.info(Time.now(), Time.FORMAT_SHORT).day.format("%02d");
-        var size = dc.getTextWidthInPixels(text, font) + 10;
-        var x = cx + radius * 0.68 - size / 2;
-        var y = cy - size / 2;
-
-        // Grey frame around a white date wheel, black digits
+    // Weekday and day of the month below the centre, e.g. "Thu 23"
+    private function drawDate(dc as Dc, cx as Number, cy as Number, radius as Number) as Void {
+        var info = Gregorian.info(Time.now(), Time.FORMAT_MEDIUM);
+        var dateStr = Lang.format("$1$ $2$", [info.day_of_week, info.day]);
         dc.setColor(Graphics.COLOR_LT_GRAY, Graphics.COLOR_TRANSPARENT);
-        dc.fillRectangle(x - 2, y - 2, size + 4, size + 4);
-        dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
-        dc.fillRectangle(x, y, size, size);
-        dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_TRANSPARENT);
-        dc.drawText(x + size / 2, cy, font, text, Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
+        dc.drawText(cx, cy + radius * 0.4, Graphics.FONT_TINY, dateStr, Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
     }
 
     // Always-on face for AMOLED screens. Garmin requires it to stay under 10% of the
