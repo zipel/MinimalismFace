@@ -92,7 +92,7 @@ class MinimalismFaceView extends WatchUi.WatchFace {
         WatchUi.requestUpdate();
     }
 
-    // Outer circle, hour marks and hour numbers 1..12
+    // Outer circle and a mark for every hour
     private function drawDial(dc as Dc, cx as Number, cy as Number, radius as Number) as Void {
         dc.setPenWidth(2);
         dc.drawCircle(cx, cy, radius);
@@ -101,16 +101,6 @@ class MinimalismFaceView extends WatchUi.WatchFace {
         dc.setPenWidth(3);
         for (var i = 0; i < 12; i += 1) {
             drawRadialLine(dc, cx, cy, i * 30, radius * 0.90, radius * 0.97);
-        }
-
-        dc.setPenWidth(1);
-        for (var i = 1; i <= 12; i += 1) {
-            var angleDeg = 90 - ((i % 12) * 30);
-            var rad = angleDeg * Math.PI / 180.0;
-            var tx = cx + Math.cos(rad) * (radius * 0.75);
-            var ty = cy - Math.sin(rad) * (radius * 0.75);
-            var s = i.toString();
-            dc.drawText(tx, ty, Graphics.FONT_SMALL, s, Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
         }
     }
 
