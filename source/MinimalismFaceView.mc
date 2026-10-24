@@ -63,14 +63,23 @@ class MinimalismFaceView extends WatchUi.WatchFace {
         dc.setPenWidth(3);
         drawRadialLine(dc, cx, cy, minuteAngleDeg, 0, radius * 0.75);
 
-        // Seconds hand only while awake; asleep it would sit frozen between once-a-minute updates
+        // Seconds hand only while awake; asleep it would sit frozen between once-a-minute updates.
+        // Red, with a short tail behind the centre like on a classic watch.
         if (_isAwake) {
-            dc.setPenWidth(1);
-            drawRadialLine(dc, cx, cy, 90 - clockTime.sec * 6, 0, radius * 0.85);
+            var secondAngleDeg = 90 - clockTime.sec * 6;
+            dc.setColor(Graphics.COLOR_RED, Graphics.COLOR_TRANSPARENT);
+            dc.setPenWidth(2);
+            drawRadialLine(dc, cx, cy, secondAngleDeg, 0, radius * 0.88);
+            drawRadialLine(dc, cx, cy, secondAngleDeg + 180, 0, radius * 0.15);
         }
 
-        // center cap
-        dc.fillCircle(cx, cy, 3);
+        // center cap, with a red dot on top while the seconds hand is showing
+        dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
+        dc.fillCircle(cx, cy, 6);
+        if (_isAwake) {
+            dc.setColor(Graphics.COLOR_RED, Graphics.COLOR_TRANSPARENT);
+            dc.fillCircle(cx, cy, 3);
+        }
     }
 
     // Called when this View is removed from the screen. Save the
