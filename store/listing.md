@@ -8,12 +8,12 @@ Minimalism Face
 
 ## Description
 
-A clean analog watch face for Garmin AMOLED watches, from the Venu 2 and 2S onward.
+A clean analog watch face for Garmin AMOLED watches.
 
 - Clean dial with a mark for every hour, no numbers
 - Red seconds hand while you're looking at your watch
 - Weekday and date below the centre
-- Dimmed always-on mode: just thin grey hands, moved slightly every minute to protect your AMOLED screen
+- Dimmed always-on mode: just thin grey hands, moving slightly every minute to protect your AMOLED screen
 
 No settings, no clutter: just the time and date.
 
@@ -38,7 +38,7 @@ On the Instinct Crossover AMOLED, the watch's own hands tell the time; the face 
 | Screenshots | No size given; simulator captures are the norm | To do, see below |
 | Hero image | 1440 × 720 px; not mentioned on the submission page | Not made |
 
-### Taking screenshots
+### Taking screenshots example
 
 1. Run the face in the Connect IQ simulator for `venu3`.
 2. Bring the simulator window to the front, press Cmd+Shift+4, then Space, then Option-click the window. The PNG lands on your desktop without a shadow.

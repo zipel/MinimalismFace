@@ -5,21 +5,31 @@
             "label": "monkeyc-build",
             "type": "shell",
             "command": "\"${env:CONNECTIQ_SDK}/bin/monkeyc\" -f monkey.jungle -o \"${workspaceFolder}/bin/MinimalismFace.iq\" -y \"${workspaceFolder}/../developer_key\"",
-            "presentation": { "reveal": "always" },
+            "presentation": {
+                "reveal": "always"
+            },
             "problemMatcher": []
         },
         {
             "label": "simulator-run",
             "type": "shell",
             "command": "\"${env:CONNECTIQ_SDK}/bin/ConnectIQ.app/Contents/MacOS/simulator\" -f \"${workspaceFolder}/bin/MinimalismFace.iq\" -d venu3",
-            "presentation": { "reveal": "always" },
+            "presentation": {
+                "reveal": "always"
+            },
             "problemMatcher": []
         },
         {
             "label": "Build & Run Simulator",
-            "dependsOn": [ "monkeyc-build", "simulator-run" ],
+            "dependsOn": [
+                "monkeyc-build",
+                "simulator-run"
+            ],
             "dependsOrder": "sequence",
-            "presentation": { "reveal": "always" }
+            "presentation": {
+                "reveal": "always"
+            },
+            "problemMatcher": []
         }
     ]
 }
