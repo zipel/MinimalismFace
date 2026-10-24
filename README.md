@@ -1,7 +1,7 @@
 MinimalismFace — Simple Watch Face
 
 Overview
-- A minimal analog Connect IQ watch face for Venu 3 and Venu 3S: hour, minute and seconds hands plus the weekday and date, with a dimmed always-on mode.
+- A minimal analog Connect IQ watch face for Garmin's AMOLED watches from the Venu 2/2S onward: hour, minute and seconds hands plus the weekday and date, with a dimmed always-on mode.
 
 Prerequisites
 - Install the Connect IQ SDK: https://developer.garmin.com/connect-iq/sdk/
@@ -41,4 +41,4 @@ Install on a Venu 3 device
 
 Files of interest
 - `source/MinimalismFaceView.mc` — watch face view; draws the dial, hands and date, plus the dimmed always-on face.
-- `manifest.xml` — app manifest (targets `venu3` and `venu3s`).
+- `manifest.xml` — app manifest (targets every AMOLED watch from the Venu 2/2S onward).

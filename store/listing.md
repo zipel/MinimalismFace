@@ -8,7 +8,7 @@ Minimalism Face
 
 ## Description
 
-A clean analog watch face for the Venu 3 and Venu 3S.
+A clean analog watch face for Garmin AMOLED watches, from the Venu 2 and 2S onward.
 
 - Clean dial with a mark for every hour, no numbers
 - Red seconds hand while you're looking at your watch
@@ -24,7 +24,7 @@ No settings, no clutter: just the time and date.
 ## Other form fields
 
 - Category: Watch Faces
-- Devices: Venu 3, Venu 3S
+- Devices: every AMOLED watch from the Venu 2/2S onward (the store lists them from the upload)
 - Languages: English (weekday names follow your watch's language)
 - Permissions: none
 
