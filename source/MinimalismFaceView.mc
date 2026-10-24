@@ -57,16 +57,16 @@ class MinimalismFaceView extends WatchUi.WatchFace {
 
         // Hour hand
         dc.setPenWidth(4);
-        drawHand(dc, cx, cy, hourAngleDeg, 0, radius * 0.5);
+        drawRadialLine(dc, cx, cy, hourAngleDeg, 0, radius * 0.5);
 
         // Minute hand
         dc.setPenWidth(3);
-        drawHand(dc, cx, cy, minuteAngleDeg, 0, radius * 0.75);
+        drawRadialLine(dc, cx, cy, minuteAngleDeg, 0, radius * 0.75);
 
         // Seconds hand only while awake; asleep it would sit frozen between once-a-minute updates
         if (_isAwake) {
             dc.setPenWidth(1);
-            drawHand(dc, cx, cy, 90 - clockTime.sec * 6, 0, radius * 0.85);
+            drawRadialLine(dc, cx, cy, 90 - clockTime.sec * 6, 0, radius * 0.85);
         }
 
         // center cap
@@ -92,17 +92,23 @@ class MinimalismFaceView extends WatchUi.WatchFace {
         WatchUi.requestUpdate();
     }
 
-    // Outer circle and hour numbers 1..12
+    // Outer circle, hour marks and hour numbers 1..12
     private function drawDial(dc as Dc, cx as Number, cy as Number, radius as Number) as Void {
         dc.setPenWidth(2);
         dc.drawCircle(cx, cy, radius);
+
+        // Hour marks just inside the ring
+        dc.setPenWidth(3);
+        for (var i = 0; i < 12; i += 1) {
+            drawRadialLine(dc, cx, cy, i * 30, radius * 0.90, radius * 0.97);
+        }
 
         dc.setPenWidth(1);
         for (var i = 1; i <= 12; i += 1) {
             var angleDeg = 90 - ((i % 12) * 30);
             var rad = angleDeg * Math.PI / 180.0;
-            var tx = cx + Math.cos(rad) * (radius * 0.78);
-            var ty = cy - Math.sin(rad) * (radius * 0.78);
+            var tx = cx + Math.cos(rad) * (radius * 0.75);
+            var ty = cy - Math.sin(rad) * (radius * 0.75);
             var s = i.toString();
             dc.drawText(tx, ty, Graphics.FONT_SMALL, s, Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
         }
@@ -127,13 +133,13 @@ class MinimalismFaceView extends WatchUi.WatchFace {
 
         dc.setColor(Graphics.COLOR_LT_GRAY, Graphics.COLOR_TRANSPARENT);
         dc.setPenWidth(3);
-        drawHand(dc, x, y, hourAngleDeg, 10, radius * 0.5);
+        drawRadialLine(dc, x, y, hourAngleDeg, 10, radius * 0.5);
         dc.setPenWidth(2);
-        drawHand(dc, x, y, minuteAngleDeg, 10, radius * 0.75);
+        drawRadialLine(dc, x, y, minuteAngleDeg, 10, radius * 0.75);
     }
 
-    // Draws a hand along angleDeg, from `inner` to `outer` pixels out from the centre
-    private function drawHand(dc as Dc, cx as Numeric, cy as Numeric, angleDeg as Numeric, inner as Numeric, outer as Numeric) as Void {
+    // Draws a line along angleDeg (hands, hour marks), from `inner` to `outer` pixels out from the centre
+    private function drawRadialLine(dc as Dc, cx as Numeric, cy as Numeric, angleDeg as Numeric, inner as Numeric, outer as Numeric) as Void {
         var rad = angleDeg * Math.PI / 180.0;
         var cos = Math.cos(rad);
         var sin = Math.sin(rad);

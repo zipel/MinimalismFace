@@ -10,7 +10,7 @@ Minimalism Face
 
 A clean analog watch face for the Venu 3 and Venu 3S.
 
-- Classic dial with hour numbers
+- Classic dial with hour marks and numbers
 - Seconds hand while you're looking at your watch
 - Weekday and date below the centre
 - Dimmed always-on mode: just thin grey hands, moved slightly every minute to protect your AMOLED screen
