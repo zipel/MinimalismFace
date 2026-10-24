@@ -16,8 +16,12 @@ class MinimalismFaceView extends WatchUi.WatchFace {
     // AMOLED). The face then leaves the hour and minute hands to them.
     private var _physicalHandsShowTime as Boolean = false;
 
+    // True on rectangular screens (Venu Sq 2, Venu X1), where the dial follows the screen's shape
+    private var _rectangular as Boolean = false;
+
     function initialize() {
         WatchFace.initialize();
+        _rectangular = System.getDeviceSettings().screenShape == System.SCREEN_SHAPE_RECTANGLE;
     }
 
     // Load your resources here
@@ -112,9 +116,27 @@ class MinimalismFaceView extends WatchUi.WatchFace {
         WatchUi.requestUpdate();
     }
 
-    // Outer circle and a mark for every hour
+    // Outer ring and a mark for every hour. On rectangular screens the ring follows the
+    // screen's own rounded-rectangle shape, 6 px in from the edge, and the marks run along it.
     private function drawDial(dc as Dc, cx as Number, cy as Number, radius as Number) as Void {
         dc.setPenWidth(2);
+
+        if (_rectangular) {
+            var w = dc.getWidth();
+            var h = dc.getHeight();
+            var corner = screenCornerRadius(w, h) - 6;
+            dc.drawRoundedRectangle(6, 6, w - 12, h - 12, corner);
+
+            // Each mark ends just inside the outline, where its hour's direction meets it
+            var gap = radius * 0.03;
+            dc.setPenWidth(3);
+            for (var i = 0; i < 12; i += 1) {
+                var edge = distanceToRoundedRect(i * 30, cx - 6 - gap, cy - 6 - gap, corner - gap);
+                drawRadialLine(dc, cx, cy, i * 30, edge - radius * 0.07, edge);
+            }
+            return;
+        }
+
         dc.drawCircle(cx, cy, radius);
 
         // Hour marks just inside the ring
@@ -154,6 +176,32 @@ class MinimalismFaceView extends WatchUi.WatchFace {
         var cos = Math.cos(rad);
         var sin = Math.sin(rad);
         dc.drawLine(cx + cos * inner, cy - sin * inner, cx + cos * outer, cy - sin * outer);
+    }
+
+    // Corner radius of the rectangular screens, measured from Garmin's device images:
+    // Venu X1 (448x486) about 68 px, Venu Sq 2 and Sq 2 Music (320x360) about 10 px
+    private function screenCornerRadius(w as Number, h as Number) as Number {
+        return (w == 448 && h == 486) ? 68 : 10;
+    }
+
+    // Distance from the centre to the edge of a centred rounded rectangle (half-width hw,
+    // half-height hh, corner radius r) along angleDeg (90 is 12 o'clock, decreasing clockwise)
+    private function distanceToRoundedRect(angleDeg as Numeric, hw as Numeric, hh as Numeric, r as Numeric) as Numeric {
+        var rad = angleDeg * Math.PI / 180.0;
+        var ux = Math.cos(rad).abs();
+        var uy = Math.sin(rad).abs();
+
+        // Where the direction meets the straight edges: whichever edge it reaches first
+        var t = (ux * hh > uy * hw) ? hw / ux : hh / uy;
+
+        // If that point lies on a rounded corner, meet the corner's circle instead
+        if (r > 0 && ux * t > hw - r && uy * t > hh - r) {
+            var ccx = hw - r;
+            var ccy = hh - r;
+            var b = ux * ccx + uy * ccy;
+            t = b + Math.sqrt(b * b - (ccx * ccx + ccy * ccy - r * r));
+        }
+        return t;
     }
 
     // On a watch with mechanical hands over the screen, asks the system to point them at the
