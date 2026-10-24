@@ -1,3 +1,4 @@
 <drawables xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://developer.garmin.com/downloads/connect-iq/resources.xsd">
-    <bitmap id="LauncherIcon" filename="launcher_icon.svg" dithering="none" />
+    <!-- Drawn at each watch's own launcher icon size (a style class in its Garmin profile) instead of scaled from 70x70 -->
+    <bitmap id="LauncherIcon" filename="launcher_icon.svg" personality="system_size__launch_icon" dithering="none" />
 </drawables>
