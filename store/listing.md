@@ -12,7 +12,7 @@ A clean analog watch face for the Venu 3 and Venu 3S.
 
 - Clean dial with a mark for every hour, no numbers
 - Seconds hand while you're looking at your watch
-- Weekday and date below the centre
+- Date window at 3 o'clock showing the day of the month
 - Dimmed always-on mode: just thin grey hands, moved slightly every minute to protect your AMOLED screen
 
 No settings, no clutter: just the time and date.
