@@ -17,6 +17,8 @@ A clean analog watch face for Garmin AMOLED watches, from the Venu 2 and 2S onwa
 
 No settings, no clutter: just the time and date.
 
+On the Instinct Crossover AMOLED, the watch's own hands tell the time; the face adds the hour marks, date and red seconds hand.
+
 ## What's new
 
 1.0.0: First release.

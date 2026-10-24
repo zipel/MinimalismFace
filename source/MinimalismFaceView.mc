@@ -12,6 +12,10 @@ class MinimalismFaceView extends WatchUi.WatchFace {
     // While asleep, onUpdate() is only called once a minute.
     private var _isAwake as Boolean = true;
 
+    // True when the watch's own mechanical hands point at the time (Instinct Crossover
+    // AMOLED). The face then leaves the hour and minute hands to them.
+    private var _physicalHandsShowTime as Boolean = false;
+
     function initialize() {
         WatchFace.initialize();
     }
@@ -25,6 +29,7 @@ class MinimalismFaceView extends WatchUi.WatchFace {
     // the state of this View and prepare it to be shown. This includes
     // loading resources into memory.
     function onShow() as Void {
+        _physicalHandsShowTime = usePhysicalHands();
     }
 
     // Update the view
@@ -45,23 +50,29 @@ class MinimalismFaceView extends WatchUi.WatchFace {
         var minuteAngleDeg = 90 - (clockTime.min * 6 + clockTime.sec * 0.1);
 
         // AMOLED always-on mode has burn-in rules, so draw the reduced face instead
+        // (with mechanical hands telling the time, the always-on screen can stay dark)
         if (!_isAwake && needsBurnInProtection()) {
-            drawAlwaysOn(dc, cx, cy, radius, hourAngleDeg, minuteAngleDeg, clockTime.min);
+            if (!_physicalHandsShowTime) {
+                drawAlwaysOn(dc, cx, cy, radius, hourAngleDeg, minuteAngleDeg, clockTime.min);
+            }
             return;
         }
 
         drawDial(dc, cx, cy, radius);
         drawDate(dc, cx, cy, radius);
 
-        dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
+        // Hour and minute hands, unless the watch's mechanical hands already show them
+        if (!_physicalHandsShowTime) {
+            dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
 
-        // Hour hand
-        dc.setPenWidth(4);
-        drawRadialLine(dc, cx, cy, hourAngleDeg, 0, radius * 0.5);
+            // Hour hand
+            dc.setPenWidth(4);
+            drawRadialLine(dc, cx, cy, hourAngleDeg, 0, radius * 0.5);
 
-        // Minute hand
-        dc.setPenWidth(3);
-        drawRadialLine(dc, cx, cy, minuteAngleDeg, 0, radius * 0.75);
+            // Minute hand
+            dc.setPenWidth(3);
+            drawRadialLine(dc, cx, cy, minuteAngleDeg, 0, radius * 0.75);
+        }
 
         // Seconds hand only while awake; asleep it would sit frozen between once-a-minute updates.
         // Red, with a short tail behind the centre like on a classic watch.
@@ -143,6 +154,20 @@ class MinimalismFaceView extends WatchUi.WatchFace {
         var cos = Math.cos(rad);
         var sin = Math.sin(rad);
         dc.drawLine(cx + cos * inner, cy - sin * inner, cx + cos * outer, cy - sin * outer);
+    }
+
+    // On a watch with mechanical hands over the screen, asks the system to point them at the
+    // current time (left alone they are reported to rest flat at 9 and 3 o'clock under a
+    // Connect IQ face). Returns true only if that worked; otherwise the face draws its own hands.
+    private function usePhysicalHands() as Boolean {
+        if (WatchUi.View has :setClockHandPosition) {
+            try {
+                return setClockHandPosition({:clockState => WatchUi.ANALOG_CLOCK_STATE_SYSTEM_TIME});
+            } catch (e instanceof Lang.Exception) {
+                // Some watch software has refused this request; draw our own hands instead
+            }
+        }
+        return false;
     }
 
     // True on screens (AMOLED) that need the always-on burn-in rules
