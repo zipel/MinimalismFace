@@ -1,12 +1,22 @@
 <svg width="500" height="500" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
 <rect width="500" height="500" fill="#D9D9D9"/>
 <circle cx="250" cy="250" r="236" fill="#000000"/>
-<circle cx="250" cy="250" r="202" fill="none" stroke="#FFFFFF" stroke-width="13"/>
-<line x1="250" y1="68" x2="250" y2="95" stroke="#FFFFFF" stroke-width="13"/>
-<line x1="405" y1="250" x2="432" y2="250" stroke="#FFFFFF" stroke-width="13"/>
-<line x1="250" y1="405" x2="250" y2="432" stroke="#FFFFFF" stroke-width="13"/>
-<line x1="68" y1="250" x2="95" y2="250" stroke="#FFFFFF" stroke-width="13"/>
-<line x1="250" y1="250" x2="167.1" y2="192" stroke="#FFFFFF" stroke-width="27" stroke-linecap="round"/>
-<line x1="250" y1="250" x2="378.1" y2="175.8" stroke="#FFFFFF" stroke-width="20" stroke-linecap="round"/>
-<circle cx="250" cy="250" r="17" fill="#FFFFFF"/>
+<circle cx="250" cy="250" r="202.00" fill="none" stroke="#FFFFFF" stroke-width="13.47"/>
+<line x1="250.00" y1="85.03" x2="250.00" y2="61.47" stroke="#FFFFFF" stroke-width="13.47"/>
+<line x1="332.48" y1="107.13" x2="344.27" y2="86.73" stroke="#FFFFFF" stroke-width="13.47"/>
+<line x1="392.87" y1="167.52" x2="413.27" y2="155.73" stroke="#FFFFFF" stroke-width="13.47"/>
+<line x1="414.97" y1="250.00" x2="438.53" y2="250.00" stroke="#FFFFFF" stroke-width="13.47"/>
+<line x1="392.87" y1="332.48" x2="413.27" y2="344.27" stroke="#FFFFFF" stroke-width="13.47"/>
+<line x1="332.48" y1="392.87" x2="344.27" y2="413.27" stroke="#FFFFFF" stroke-width="13.47"/>
+<line x1="250.00" y1="414.97" x2="250.00" y2="438.53" stroke="#FFFFFF" stroke-width="13.47"/>
+<line x1="167.52" y1="392.87" x2="155.73" y2="413.27" stroke="#FFFFFF" stroke-width="13.47"/>
+<line x1="107.13" y1="332.48" x2="86.73" y2="344.27" stroke="#FFFFFF" stroke-width="13.47"/>
+<line x1="85.03" y1="250.00" x2="61.47" y2="250.00" stroke="#FFFFFF" stroke-width="13.47"/>
+<line x1="107.13" y1="167.52" x2="86.73" y2="155.73" stroke="#FFFFFF" stroke-width="13.47"/>
+<line x1="167.52" y1="107.13" x2="155.73" y2="86.73" stroke="#FFFFFF" stroke-width="13.47"/>
+<line x1="250.00" y1="250.00" x2="167.27" y2="192.07" stroke="#FFFFFF" stroke-width="26.93" stroke-linecap="round"/>
+<line x1="250.00" y1="250.00" x2="381.20" y2="174.25" stroke="#FFFFFF" stroke-width="20.2" stroke-linecap="round"/>
+<line x1="270.27" y1="227.48" x2="131.06" y2="382.10" stroke="#FF0000" stroke-width="10.10" stroke-linecap="round"/>
+<circle cx="250" cy="250" r="20.20" fill="#FFFFFF"/>
+<circle cx="250" cy="250" r="10.10" fill="#FF0000"/>
 </svg>
