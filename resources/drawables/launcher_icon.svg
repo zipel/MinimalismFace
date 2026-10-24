@@ -1,11 +1,21 @@
 <svg width="70" height="70" viewBox="0 0 70 70" xmlns="http://www.w3.org/2000/svg">
 <circle cx="35" cy="35" r="35" fill="#000000"/>
-<circle cx="35" cy="35" r="30" fill="none" stroke="#FFFFFF" stroke-width="2"/>
-<line x1="35" y1="8" x2="35" y2="12" stroke="#FFFFFF" stroke-width="2"/>
-<line x1="58" y1="35" x2="62" y2="35" stroke="#FFFFFF" stroke-width="2"/>
-<line x1="35" y1="58" x2="35" y2="62" stroke="#FFFFFF" stroke-width="2"/>
-<line x1="8" y1="35" x2="12" y2="35" stroke="#FFFFFF" stroke-width="2"/>
-<line x1="35" y1="35" x2="22.7" y2="26.4" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round"/>
-<line x1="35" y1="35" x2="54" y2="24" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round"/>
-<circle cx="35" cy="35" r="2.5" fill="#FFFFFF"/>
+<circle cx="35" cy="35" r="30.00" fill="none" stroke="#FFFFFF" stroke-width="2.00"/>
+<line x1="35.00" y1="10.50" x2="35.00" y2="7.00" stroke="#FFFFFF" stroke-width="2"/>
+<line x1="47.25" y1="13.78" x2="49.00" y2="10.75" stroke="#FFFFFF" stroke-width="2"/>
+<line x1="56.22" y1="22.75" x2="59.25" y2="21.00" stroke="#FFFFFF" stroke-width="2"/>
+<line x1="59.50" y1="35.00" x2="63.00" y2="35.00" stroke="#FFFFFF" stroke-width="2"/>
+<line x1="56.22" y1="47.25" x2="59.25" y2="49.00" stroke="#FFFFFF" stroke-width="2"/>
+<line x1="47.25" y1="56.22" x2="49.00" y2="59.25" stroke="#FFFFFF" stroke-width="2"/>
+<line x1="35.00" y1="59.50" x2="35.00" y2="63.00" stroke="#FFFFFF" stroke-width="2"/>
+<line x1="22.75" y1="56.22" x2="21.00" y2="59.25" stroke="#FFFFFF" stroke-width="2"/>
+<line x1="13.78" y1="47.25" x2="10.75" y2="49.00" stroke="#FFFFFF" stroke-width="2"/>
+<line x1="10.50" y1="35.00" x2="7.00" y2="35.00" stroke="#FFFFFF" stroke-width="2"/>
+<line x1="13.78" y1="22.75" x2="10.75" y2="21.00" stroke="#FFFFFF" stroke-width="2"/>
+<line x1="22.75" y1="13.78" x2="21.00" y2="10.75" stroke="#FFFFFF" stroke-width="2"/>
+<line x1="35.00" y1="35.00" x2="22.71" y2="26.40" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round"/>
+<line x1="35.00" y1="35.00" x2="54.49" y2="23.75" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round"/>
+<line x1="38.01" y1="31.66" x2="17.33" y2="54.62" stroke="#FF0000" stroke-width="1.50" stroke-linecap="round"/>
+<circle cx="35" cy="35" r="3.00" fill="#FFFFFF"/>
+<circle cx="35" cy="35" r="1.50" fill="#FF0000"/>
 </svg>
