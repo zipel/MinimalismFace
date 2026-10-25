@@ -40,8 +40,8 @@ On the Instinct Crossover AMOLED, the watch's own hands tell the time; the face 
 
 ### Taking screenshots example
 
-1. Run the face in the Connect IQ simulator for `venu3`.
+1. Run the face in the Connect IQ simulator for `fenix847mm` (fēnix 8 AMOLED 47mm).
 2. Bring the simulator window to the front, press Cmd+Shift+4, then Space, then Option-click the window. The PNG lands on your desktop without a shadow.
-3. Repeat with `venu3s` if you want both sizes.
+3. Repeat with `fenix843mm` (fēnix 8 AMOLED 43mm) if you want both sizes.
 
 Specs are from [Garmin's Connect IQ brand guidelines](https://developer.garmin.com/brand-guidelines/connect-iq/) and the [submission page](https://developer.garmin.com/connect-iq/submit-an-app/); both say they may change, so check the upload form.
