@@ -17,25 +17,25 @@ Build the .iq package:
 <SDK_PATH>/bin/monkeyc -f manifest.xml -o bin/MinimalismFace.iq -y
 ```
 
-Run the simulator for Venu 3:
+Run the simulator for Fēnix 8 AMOLED 47mm:
 
 ```bash
-<SDK_PATH>/bin/simulator -f bin/MinimalismFace.iq -d venu3
+<SDK_PATH>/bin/simulator -f bin/MinimalismFace.iq -d fenix847mm
 ```
 
 Run in VS Code (recommended)
 - Open this folder in VS Code.
 - Configure the Connect IQ SDK path in the extension settings.
-- Use the Connect IQ extension Run/Debug commands (Command Palette) to launch the simulator targeting `venu3`.
+- Use the Connect IQ extension Run/Debug commands (Command Palette) to launch the simulator targeting `fenix847mm` (Fēnix 8 47mm / 51mm).
 
 VS Code Tasks (one-click build + run)
 - Set an environment variable `CONNECTIQ_SDK` pointing to your Connect IQ SDK folder (or edit the commands in `.vscode/tasks.json`).
-- In VS Code run the task: `Tasks: Run Task` → `Build & Run Simulator` (this will build the `.iq` and launch the simulator for `venu3`).
+- In VS Code run the task: `Tasks: Run Task` → `Build & Run Simulator` (this will build the `.iq` and launch the simulator for `fenix847mm`).
 
 Files added to help:
 - `.vscode/tasks.json` — tasks to build and run the simulator using `${env:CONNECTIQ_SDK}`.
 
-Install on a Venu 3 device
+Install on a Fēnix 8 AMOLED 47mm device
 - The usual method for users is to publish the app through the Connect IQ Store and install it from Garmin Connect Mobile.
 - For local testing on your paired device, follow Garmin's developer documentation for side-loading and device deployment:
   https://developer.garmin.com/connect-iq/dev-guides/overview/

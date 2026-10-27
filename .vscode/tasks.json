@@ -13,7 +13,7 @@
         {
             "label": "simulator-run",
             "type": "shell",
-            "command": "\"${env:CONNECTIQ_SDK}/bin/ConnectIQ.app/Contents/MacOS/simulator\" -f \"${workspaceFolder}/bin/MinimalismFace.iq\" -d venu3",
+            "command": "\"${env:CONNECTIQ_SDK}/bin/ConnectIQ.app/Contents/MacOS/simulator\" -f \"${workspaceFolder}/bin/MinimalismFace.iq\" -d fenix847mm",
             "presentation": {
                 "reveal": "always"
             },
