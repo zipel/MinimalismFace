@@ -24,18 +24,19 @@ module Settings {
         var battery = readPosition("BatteryPosition", POSITION_OFF);
 
         if (date != POSITION_OFF && date == battery) {
-            if (date == datePosition) {
+            if (date == lastDatePosition()) {
                 // The date stayed where it was, so the battery was moved onto it
                 date = otherField(battery);
+                writePosition("DatePosition", date);
             } else {
                 battery = otherField(date);
+                writePosition("BatteryPosition", battery);
             }
-            Application.Properties.setValue("DatePosition", date);
-            Application.Properties.setValue("BatteryPosition", battery);
         }
 
         datePosition = date;
         batteryPosition = battery;
+        rememberDatePosition();
     }
 
     // Choices made in the settings menu on the watch. Moving one into the field the other
@@ -43,19 +44,21 @@ module Settings {
     function setDatePosition(position as Position) as Void {
         if (position != POSITION_OFF && position == batteryPosition) {
             batteryPosition = otherField(position);
-            Application.Properties.setValue("BatteryPosition", batteryPosition);
+            writePosition("BatteryPosition", batteryPosition);
         }
         datePosition = position;
-        Application.Properties.setValue("DatePosition", position);
+        writePosition("DatePosition", position);
+        rememberDatePosition();
     }
 
     function setBatteryPosition(position as Position) as Void {
         if (position != POSITION_OFF && position == datePosition) {
             datePosition = otherField(position);
-            Application.Properties.setValue("DatePosition", datePosition);
+            writePosition("DatePosition", datePosition);
+            rememberDatePosition();
         }
         batteryPosition = position;
-        Application.Properties.setValue("BatteryPosition", position);
+        writePosition("BatteryPosition", position);
     }
 
     // The top field for the bottom one and the other way round
@@ -63,12 +66,46 @@ module Settings {
         return position == POSITION_TOP ? POSITION_BOTTOM : POSITION_TOP;
     }
 
-    // A stored position, or the default if it is missing or not one of the three values
+    // A stored position, or the default if it is missing or not one of the three values.
+    // Some phone apps have stored numbers as text, so anything that converts to a number is accepted.
     function readPosition(key as String, defaultValue as Position) as Position {
-        var value = Application.Properties.getValue(key);
+        var value = null;
+        try {
+            value = Application.Properties.getValue(key);
+        } catch (e instanceof Lang.Exception) {
+            return defaultValue;
+        }
+        if (value instanceof Lang.Long || value instanceof Lang.Float || value instanceof Lang.Double || value instanceof Lang.String) {
+            value = value.toNumber();
+        }
         if (value instanceof Number && value >= POSITION_OFF && value <= POSITION_BOTTOM) {
             return value as Position;
         }
         return defaultValue;
+    }
+
+    function writePosition(key as String, position as Position) as Void {
+        try {
+            Application.Properties.setValue(key, position);
+        } catch (e instanceof Lang.Exception) {
+            // Keep showing the choice even if it couldn't be saved
+        }
+    }
+
+    // Where the face last showed the date. It is kept in storage because the face is restarted,
+    // for example when its settings menu on the watch closes, and load() needs it after that.
+    function lastDatePosition() as Position {
+        var value = Application.Storage.getValue("ShownDatePosition");
+        if (value instanceof Number) {
+            return value as Position;
+        }
+        return datePosition;
+    }
+
+    function rememberDatePosition() as Void {
+        var stored = Application.Storage.getValue("ShownDatePosition");
+        if (!(stored instanceof Number) || stored != datePosition) {
+            Application.Storage.setValue("ShownDatePosition", datePosition);
+        }
     }
 }
