@@ -2,30 +2,30 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "monkeyc-build",
-            "type": "shell",
-            "command": "\"${env:CONNECTIQ_SDK}/bin/monkeyc\" -f monkey.jungle -o \"${workspaceFolder}/bin/MinimalismFace.iq\" -y \"${workspaceFolder}/../developer_key\"",
-            "presentation": {
-                "reveal": "always"
-            },
-            "problemMatcher": []
-        },
-        {
-            "label": "simulator-run",
-            "type": "shell",
-            "command": "\"${env:CONNECTIQ_SDK}/bin/ConnectIQ.app/Contents/MacOS/simulator\" -f \"${workspaceFolder}/bin/MinimalismFace.iq\" -d fenix847mm",
-            "presentation": {
-                "reveal": "always"
-            },
-            "problemMatcher": []
-        },
-        {
             "label": "Build & Run Simulator",
-            "dependsOn": [
-                "monkeyc-build",
-                "simulator-run"
+            "detail": "Builds the face for the watch you pick and shows it in the Connect IQ simulator",
+            "type": "shell",
+            "command": "./scripts/simulator.sh",
+            "args": [
+                "${command:monkeyc.getTargetDevice}",
+                "${config:monkeyC.developerKeyPath}"
             ],
-            "dependsOrder": "sequence",
+            "presentation": {
+                "reveal": "always"
+            },
+            "runOptions": {
+                "instancePolicy": "terminateOldest"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Export for Connect IQ Store",
+            "detail": "Builds bin/MinimalismFace.iq, the file to upload to the Connect IQ Store",
+            "type": "shell",
+            "command": "./scripts/export.sh",
+            "args": [
+                "${config:monkeyC.developerKeyPath}"
+            ],
             "presentation": {
                 "reveal": "always"
             },
