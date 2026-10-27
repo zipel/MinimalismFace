@@ -34,6 +34,8 @@ class MinimalismFaceView extends WatchUi.WatchFace {
     // loading resources into memory.
     function onShow() as Void {
         _physicalHandsShowTime = usePhysicalHands();
+        // Pick up changes made in the face's settings menu on the watch
+        Settings.load();
     }
 
     // Update the view
@@ -63,7 +65,7 @@ class MinimalismFaceView extends WatchUi.WatchFace {
         }
 
         drawDial(dc, cx, cy, radius);
-        drawDate(dc, cx, cy, radius);
+        drawFields(dc, cx, cy, radius);
 
         // Hour and minute hands, unless the watch's mechanical hands already show them
         if (!_physicalHandsShowTime) {
@@ -146,12 +148,67 @@ class MinimalismFaceView extends WatchUi.WatchFace {
         }
     }
 
-    // Weekday and day of the month below the centre, e.g. "Thu 23"
-    private function drawDate(dc as Dc, cx as Number, cy as Number, radius as Number) as Void {
+    // The two fields above and below the centre, showing the date and the battery level
+    // wherever the settings put them
+    private function drawFields(dc as Dc, cx as Number, cy as Number, radius as Number) as Void {
+        if (Settings.datePosition != Settings.POSITION_OFF) {
+            drawDate(dc, cx, fieldY(Settings.datePosition, cy, radius));
+        }
+        if (Settings.batteryPosition != Settings.POSITION_OFF) {
+            drawBattery(dc, cx, fieldY(Settings.batteryPosition, cy, radius));
+        }
+    }
+
+    // Vertical centre of the top or bottom field
+    private function fieldY(position as Settings.Position, cy as Number, radius as Number) as Float {
+        return position == Settings.POSITION_TOP ? cy - radius * 0.4 : cy + radius * 0.4;
+    }
+
+    // Weekday and day of the month, e.g. "Thu 23"
+    private function drawDate(dc as Dc, x as Number, y as Float) as Void {
         var info = Gregorian.info(Time.now(), Time.FORMAT_MEDIUM);
         var dateStr = Lang.format("$1$ $2$", [info.day_of_week, info.day]);
         dc.setColor(Graphics.COLOR_LT_GRAY, Graphics.COLOR_TRANSPARENT);
-        dc.drawText(cx, cy + radius * 0.4, Graphics.FONT_TINY, dateStr, Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
+        dc.drawText(x, y, Graphics.FONT_TINY, dateStr, Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
+    }
+
+    // Battery level: a horizontal battery filled to the charge, then the percentage, e.g. "22%",
+    // centred together on (x, y). The battery is sized from the font so it matches the digits.
+    private function drawBattery(dc as Dc, x as Number, y as Float) as Void {
+        var font = Graphics.FONT_TINY;
+        var level = System.getSystemStats().battery;
+        var text = (level + 0.5).toNumber().toString() + "%";
+
+        // Body about as tall as the digits and twice as wide, with a terminal on the right
+        var digitHeight = dc.getFontHeight(font) * 0.6;
+        var h = (digitHeight * 0.85 + 0.5).toNumber();
+        var w = h * 2;
+        var line = (h / 10 > 2) ? h / 10 : 2;
+        var pad = (h / 12 > 1) ? h / 12 : 1;
+        var nubWidth = (h / 6 > 2) ? h / 6 : 2;
+        var nubHeight = h / 2;
+        var gap = h / 3;
+
+        var textWidth = dc.getTextWidthInPixels(text, font);
+        var left = (x - (w + nubWidth + gap + textWidth) / 2.0 + 0.5).toNumber();
+        var top = (y - h / 2.0 + 0.5).toNumber();
+
+        // Outline drawn as a filled body with its inside cleared, so it is the same on every watch
+        dc.setColor(Graphics.COLOR_LT_GRAY, Graphics.COLOR_TRANSPARENT);
+        dc.fillRoundedRectangle(left, top, w, h, line + 1);
+        dc.fillRectangle(left + w, top + (h - nubHeight) / 2, nubWidth, nubHeight);
+        dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_TRANSPARENT);
+        dc.fillRectangle(left + line, top + line, w - 2 * line, h - 2 * line);
+
+        // Charge level inside the outline
+        var inner = w - 2 * (line + pad);
+        var fill = (inner * level / 100.0 + 0.5).toNumber();
+        dc.setColor(Graphics.COLOR_LT_GRAY, Graphics.COLOR_TRANSPARENT);
+        if (fill > 0) {
+            dc.fillRectangle(left + line + pad, top + line + pad, fill, h - 2 * (line + pad));
+        }
+
+        dc.drawText(left + w + nubWidth + gap, y, font, text, Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER);
     }
 
     // Always-on face for AMOLED screens. Garmin requires it to stay under 10% of the

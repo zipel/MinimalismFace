@@ -1,0 +1,5 @@
+<properties>
+    <!-- Where each field goes: 0 = Off, 1 = Top, 2 = Bottom (Settings.Position in source/Settings.mc) -->
+    <property id="DatePosition" type="number">2</property>
+    <property id="BatteryPosition" type="number">0</property>
+</properties>

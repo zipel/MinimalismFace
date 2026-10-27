@@ -1,0 +1,17 @@
+<!-- The face's settings page in the Connect IQ app on the phone -->
+<settings>
+    <setting propertyKey="@Properties.DatePosition" title="@Strings.DateTitle">
+        <settingConfig type="list">
+            <listEntry value="1">@Strings.PositionTop</listEntry>
+            <listEntry value="2">@Strings.PositionBottom</listEntry>
+            <listEntry value="0">@Strings.PositionOff</listEntry>
+        </settingConfig>
+    </setting>
+    <setting propertyKey="@Properties.BatteryPosition" title="@Strings.BatteryTitle">
+        <settingConfig type="list">
+            <listEntry value="1">@Strings.PositionTop</listEntry>
+            <listEntry value="2">@Strings.PositionBottom</listEntry>
+            <listEntry value="0">@Strings.PositionOff</listEntry>
+        </settingConfig>
+    </setting>
+</settings>
