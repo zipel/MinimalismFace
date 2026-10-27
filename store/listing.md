@@ -12,8 +12,8 @@ A clean analog watch face for Garmin AMOLED watches.
 
 - Clean dial with a mark for every hour, no numbers
 - Red seconds hand while you're looking at your watch
-- Weekday and date below the centre, above it, or hidden
-- Battery level if you want it: a small battery icon and the percentage, above or below the centre
+- Optional weekday and date
+- Optional battery level indicator
 - Dimmed always-on mode: just thin grey hands, moving slightly every minute to protect your AMOLED screen
 
 Change these settings on the watch, from the face's settings in the watch face menu, or in the Connect IQ app on your phone.
