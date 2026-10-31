@@ -225,15 +225,48 @@ class MinimalismFaceView extends WatchUi.WatchFace {
     // draws only thin grey hour and minute hands that start away from the pivot, and moves
     // them to a different spot (within 2 px) every minute.
     private function drawAlwaysOn(dc as Dc, cx as Number, cy as Number, radius as Number, hourAngleDeg as Numeric, minuteAngleDeg as Numeric, minute as Number) as Void {
+        dc.setColor(Graphics.COLOR_LT_GRAY, Graphics.COLOR_TRANSPARENT);
+
+        // The first always-on watches (Venu, D2 Air, Venu Sq) are stricter. They are the ones
+        // without System.getDisplayMode, which came with the Venu 2's brightness rule.
+        if (!(System has :getDisplayMode)) {
+            drawStrictAlwaysOn(dc, cx, cy, radius, hourAngleDeg, minuteAngleDeg, minute);
+            return;
+        }
+
         var shift = minute % 9;
         var x = cx + (shift % 3 - 1) * 2;
         var y = cy + (shift / 3 - 1) * 2;
 
-        dc.setColor(Graphics.COLOR_LT_GRAY, Graphics.COLOR_TRANSPARENT);
         dc.setPenWidth(3);
         drawRadialLine(dc, x, y, hourAngleDeg, 10, radius * 0.5);
         dc.setPenWidth(2);
         drawRadialLine(dc, x, y, minuteAngleDeg, 10, radius * 0.75);
+    }
+
+    // Always-on hands for the first always-on watches, which turn the screen off if any pixel
+    // stays lit for more than 3 minutes. Every minute both hands move 3 px to the other side of
+    // their line, so their pixels go dark the next minute. They start 24 px out, because nearer
+    // the pivot they move too little. And the minute hand leaves out the part that runs within
+    // 12 px of the hour hand, so it can't relight the hour hand's pixels in the minute between.
+    // Simulated minute by minute over 12 hours, no pixel stays lit for more than 3 minutes.
+    private function drawStrictAlwaysOn(dc as Dc, cx as Number, cy as Number, radius as Number, hourAngleDeg as Numeric, minuteAngleDeg as Numeric, minute as Number) as Void {
+        var side = (minute % 2 == 0) ? -3 : 3;
+
+        // Where the minute hand starts: 24 px out, or further while it lies close to the hour hand
+        // (12 px from the hour hand's line, or just past its tip when the hands are nearly in line)
+        var minuteInner = 24.0;
+        var between = (hourAngleDeg - minuteAngleDeg) * Math.PI / 180.0;
+        var spread = Math.sin(between).abs();
+        if (Math.cos(between) > 0 && spread * minuteInner < 12) {
+            var pastHourHand = radius * 0.5 + 4;
+            minuteInner = (spread * pastHourHand > 12) ? 12 / spread : pastHourHand;
+        }
+
+        dc.setPenWidth(3);
+        drawRadialLineToSide(dc, cx, cy, hourAngleDeg, side, 24, radius * 0.5);
+        dc.setPenWidth(2);
+        drawRadialLineToSide(dc, cx, cy, minuteAngleDeg, side, minuteInner, radius * 0.75);
     }
 
     // Draws a line along angleDeg (hands, hour marks), from `inner` to `outer` pixels out from the centre
@@ -242,6 +275,12 @@ class MinimalismFaceView extends WatchUi.WatchFace {
         var cos = Math.cos(rad);
         var sin = Math.sin(rad);
         dc.drawLine(cx + cos * inner, cy - sin * inner, cx + cos * outer, cy - sin * outer);
+    }
+
+    // drawRadialLine moved `side` px sideways: to the right of the line's direction, or to the left when negative
+    private function drawRadialLineToSide(dc as Dc, cx as Numeric, cy as Numeric, angleDeg as Numeric, side as Numeric, inner as Numeric, outer as Numeric) as Void {
+        var rad = angleDeg * Math.PI / 180.0;
+        drawRadialLine(dc, cx + side * Math.sin(rad), cy + side * Math.cos(rad), angleDeg, inner, outer);
     }
 
     // Corner radius of the rectangular screens, measured from Garmin's device images:
