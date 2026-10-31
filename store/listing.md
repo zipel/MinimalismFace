@@ -19,7 +19,7 @@ A clean analog watch face for Garmin AMOLED watches.
 
 Change these settings on the watch, from the face's settings in the watch face menu, or in the Connect IQ app on your phone.
 
-No clutter: just the time and date, plus the battery level if you want it.
+No clutter: just the time, plus the battery level and the date if you want them.
 
 On the Instinct Crossover AMOLED, the watch's own hands tell the time; the face adds the hour marks, date and red seconds hand.
 
@@ -34,9 +34,8 @@ On the Instinct Crossover AMOLED, the watch's own hands tell the time; the face 
 ## Other form fields
 
 - Category: Watch Faces
-- Devices: every AMOLED watch from the Venu 2/2S onward (the store lists them from the upload)
+- Devices: All modern AMOLED watches (the store lists them from the upload)
 - Languages: English (weekday names follow your watch's language)
-- Permissions: none
 
 ## Images
 
