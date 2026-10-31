@@ -16,7 +16,7 @@ class MinimalismFaceView extends WatchUi.WatchFace {
     // AMOLED). The face then leaves the hour and minute hands to them.
     private var _physicalHandsShowTime as Boolean = false;
 
-    // True on rectangular screens (Venu Sq 2, Venu X1), where the dial follows the screen's shape
+    // True on rectangular screens (Venu Sq, Venu Sq 2, Venu X1), where the dial follows the screen's shape
     private var _rectangular as Boolean = false;
 
     function initialize() {
@@ -40,7 +40,10 @@ class MinimalismFaceView extends WatchUi.WatchFace {
 
     // Update the view
     function onUpdate(dc as Dc) as Void {
-        dc.setAntiAlias(true);
+        // Smooth edges where the watch supports it (older ones like the Approach S62 don't)
+        if (dc has :setAntiAlias) {
+            dc.setAntiAlias(true);
+        }
         dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_BLACK);
         dc.clear();
 
@@ -55,8 +58,9 @@ class MinimalismFaceView extends WatchUi.WatchFace {
         var hourAngleDeg = 90 - ((clockTime.hour % 12) * 30 + clockTime.min * 0.5);
         var minuteAngleDeg = 90 - (clockTime.min * 6 + clockTime.sec * 0.1);
 
-        // AMOLED always-on mode has burn-in rules, so draw the reduced face instead
-        // (with mechanical hands telling the time, the always-on screen can stay dark)
+        // Always-on mode on AMOLED screens (and the Venu Sq's LCD) has burn-in rules, so draw the
+        // reduced face instead (with mechanical hands telling the time, the screen can stay dark).
+        // MIP screens have no such rules and keep the full face, without the seconds hand.
         if (!_isAwake && needsBurnInProtection()) {
             if (!_physicalHandsShowTime) {
                 drawAlwaysOn(dc, cx, cy, radius, hourAngleDeg, minuteAngleDeg, clockTime.min);
@@ -216,9 +220,9 @@ class MinimalismFaceView extends WatchUi.WatchFace {
         dc.drawText(left + w / 2, top + h / 2, font, text, Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
     }
 
-    // Always-on face for AMOLED screens. Garmin requires it to stay under 10% of the
-    // screen's brightness and recommends avoiding pixels that stay lit, so this draws
-    // only thin grey hour and minute hands that start away from the pivot, and moves
+    // Always-on face for AMOLED screens and the Venu Sq. Garmin requires it to stay under
+    // 10% of the screen's brightness and recommends avoiding pixels that stay lit, so this
+    // draws only thin grey hour and minute hands that start away from the pivot, and moves
     // them to a different spot (within 2 px) every minute.
     private function drawAlwaysOn(dc as Dc, cx as Number, cy as Number, radius as Number, hourAngleDeg as Numeric, minuteAngleDeg as Numeric, minute as Number) as Void {
         var shift = minute % 9;
@@ -241,7 +245,8 @@ class MinimalismFaceView extends WatchUi.WatchFace {
     }
 
     // Corner radius of the rectangular screens, measured from Garmin's device images:
-    // Venu X1 (448x486) about 68 px, Venu Sq 2 and Sq 2 Music (320x360) about 10 px
+    // Venu X1 (448x486) about 68 px; Venu Sq 2 and Sq 2 Music (320x360), and Venu Sq and Sq Music
+    // (240x240), about 10 px
     private function screenCornerRadius(w as Number, h as Number) as Number {
         return (w == 448 && h == 486) ? 68 : 10;
     }
@@ -270,7 +275,9 @@ class MinimalismFaceView extends WatchUi.WatchFace {
     // current time (left alone they are reported to rest flat at 9 and 3 o'clock under a
     // Connect IQ face). Returns true only if that worked; otherwise the face draws its own hands.
     private function usePhysicalHands() as Boolean {
-        if (WatchUi.View has :setClockHandPosition) {
+        // Both checks are needed: the compiler rejects the clock state on watches whose software
+        // predates it (Approach S62, vívoactive 3 models) unless the code checks for it first
+        if ((WatchUi.View has :setClockHandPosition) && (WatchUi has :ANALOG_CLOCK_STATE_SYSTEM_TIME)) {
             try {
                 return setClockHandPosition({:clockState => WatchUi.ANALOG_CLOCK_STATE_SYSTEM_TIME});
             } catch (e instanceof Lang.Exception) {
@@ -280,7 +287,7 @@ class MinimalismFaceView extends WatchUi.WatchFace {
         return false;
     }
 
-    // True on screens (AMOLED) that need the always-on burn-in rules
+    // True on screens that need the always-on burn-in rules (AMOLED, and the Venu Sq's LCD)
     private function needsBurnInProtection() as Boolean {
         var settings = System.getDeviceSettings();
         return (settings has :requiresBurnInProtection) && settings.requiresBurnInProtection;

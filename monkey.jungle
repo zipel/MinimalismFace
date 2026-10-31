@@ -1,1 +1,26 @@
 project.manifest = manifest.xml
+
+# The launcher icon is drawn at each watch's own size, from the system_size__launch_icon style in
+# the watch's Garmin profile (see resources/drawables/drawables.xml). These older watches' profiles
+# don't have that style, so the files in personality/ give it to them, at the size in their profile.
+approachs62.personality = $(approachs62.personality);personality/launcher-icon-35x35.mss
+d2air.personality = $(d2air.personality);personality/launcher-icon-60x60.mss
+descentmk2.personality = $(descentmk2.personality);personality/launcher-icon-40x40.mss
+descentmk2s.personality = $(descentmk2s.personality);personality/launcher-icon-40x40.mss
+fr245.personality = $(fr245.personality);personality/launcher-icon-40x40.mss
+fr245m.personality = $(fr245m.personality);personality/launcher-icon-40x40.mss
+fr745.personality = $(fr745.personality);personality/launcher-icon-40x40.mss
+fr945.personality = $(fr945.personality);personality/launcher-icon-40x40.mss
+legacyherocaptainmarvel.personality = $(legacyherocaptainmarvel.personality);personality/launcher-icon-30x30.mss
+legacyherofirstavenger.personality = $(legacyherofirstavenger.personality);personality/launcher-icon-35x35.mss
+legacysagadarthvader.personality = $(legacysagadarthvader.personality);personality/launcher-icon-35x35.mss
+legacysagarey.personality = $(legacysagarey.personality);personality/launcher-icon-30x30.mss
+venu.personality = $(venu.personality);personality/launcher-icon-60x60.mss
+venud.personality = $(venud.personality);personality/launcher-icon-60x60.mss
+venusq.personality = $(venusq.personality);personality/launcher-icon-36x36.mss
+venusqm.personality = $(venusqm.personality);personality/launcher-icon-36x36.mss
+vivoactive3d.personality = $(vivoactive3d.personality);personality/launcher-icon-40x33.mss
+vivoactive3mlte.personality = $(vivoactive3mlte.personality);personality/launcher-icon-40x33.mss
+vivoactive4.personality = $(vivoactive4.personality);personality/launcher-icon-35x35.mss
+vivoactive4s.personality = $(vivoactive4s.personality);personality/launcher-icon-30x30.mss
+vivolife.personality = $(vivolife.personality);personality/launcher-icon-40x33.mss

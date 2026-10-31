@@ -8,14 +8,15 @@ Minimalism Face
 
 ## Description
 
-A clean analog watch face for Garmin AMOLED watches.
+A clean analog watch face for Garmin watches.
 
 - Clean dial with a mark for every hour, no numbers
 - Red seconds hand while you're looking at your watch, or none if you prefer
 - Optional weekday and date
 - Optional battery level indicator
 - Dial with or without its outline, or with no outline and no hour marks
-- Dimmed always-on mode: just thin grey hands, moving slightly every minute to protect your AMOLED screen
+- Dimmed always-on mode on AMOLED screens and the Venu Sq: just thin grey hands, moving slightly every minute to protect the screen
+- On MIP screens, the full face stays on when you're not looking, just without the seconds hand
 
 Change these settings on the watch, from the face's settings in the watch face menu, or in the Connect IQ app on your phone.
 
@@ -24,6 +25,8 @@ No clutter: just the time, plus the battery level and the date if you want them.
 On the Instinct Crossover AMOLED, the watch's own hands tell the time; the face adds the hour marks, date and red seconds hand.
 
 ## What's new
+
+1.3.0: Now also for Garmin's colour-screen watches from 2019 onward, like the fēnix 6 and 7, Forerunner 245, 255 and 955, vívoactive 4, Venu and Venu Sq.
 
 1.2.0: A simpler battery indicator with the level inside the battery, a Dial setting to hide the outline, or the outline and the hour marks, and a setting to turn off the seconds hand.
 
@@ -34,7 +37,7 @@ On the Instinct Crossover AMOLED, the watch's own hands tell the time; the face 
 ## Other form fields
 
 - Category: Watch Faces
-- Devices: All modern AMOLED watches (the store lists them from the upload)
+- Devices: Colour-screen watches from 2019 onward, except the Forerunner 45 and Swim 2 (the store lists them from the upload)
 - Languages: English (weekday names follow your watch's language)
 
 ## Images
