@@ -11,7 +11,7 @@ Minimalism Face
 A clean analog watch face for Garmin AMOLED watches.
 
 - Clean dial with a mark for every hour, no numbers
-- Red seconds hand while you're looking at your watch
+- Red seconds hand while you're looking at your watch, or none if you prefer
 - Optional weekday and date
 - Optional battery level indicator
 - Dial with or without its outline, or with no outline and no hour marks
@@ -25,7 +25,7 @@ On the Instinct Crossover AMOLED, the watch's own hands tell the time; the face 
 
 ## What's new
 
-1.2.0: A simpler battery indicator with the level inside the battery, and a Dial setting to hide the outline, or the outline and the hour marks.
+1.2.0: A simpler battery indicator with the level inside the battery, a Dial setting to hide the outline, or the outline and the hour marks, and a setting to turn off the seconds hand.
 
 1.1.0: Settings, on the watch or in the Connect IQ app: move the date above the centre or hide it, and show the battery level.
 

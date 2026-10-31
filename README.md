@@ -2,7 +2,7 @@ MinimalismFace — Simple Watch Face
 
 Overview
 - A minimal analog Connect IQ watch face for Garmin's AMOLED watches from the Venu 2/2S onward: hour, minute and seconds hands plus the weekday and date, with a dimmed always-on mode.
-- Settings, on the watch or in the Connect IQ app on the phone, put the date and an optional battery level above or below the centre, or turn either off, and hide the dial's outline, or the outline and the hour marks.
+- Settings, on the watch or in the Connect IQ app on the phone, put the date and an optional battery level above or below the centre, or turn either off, hide the dial's outline, or the outline and the hour marks, and turn off the seconds hand.
 
 Prerequisites
 - Install the Connect IQ SDK: https://developer.garmin.com/connect-iq/sdk/
@@ -47,7 +47,7 @@ Install on a Fēnix 8 AMOLED 47mm device
 
 Files of interest
 - `source/MinimalismFaceView.mc` — watch face view; draws the dial, hands, date and battery fields, plus the dimmed always-on face.
-- `source/Settings.mc` — the settings (where the date and the battery level go, and what the dial shows), stored as app properties.
+- `source/Settings.mc` — the settings (where the date and the battery level go, what the dial shows, and the seconds hand), stored as app properties.
 - `source/SettingsMenu.mc` — the settings menu on the watch.
 - `resources/settings/` — the same settings for the Connect IQ app on the phone.
 - `manifest.xml` — app manifest (targets every AMOLED watch from the Venu 2/2S onward).

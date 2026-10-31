@@ -2,7 +2,7 @@ import Toybox.Lang;
 import Toybox.WatchUi;
 
 // The face's settings menu on the watch: "Date", "Battery" and "Dial", each showing its current
-// choice underneath. Selecting one opens the list of its choices.
+// choice underneath (selecting one opens the list of its choices), and a "Seconds hand" switch.
 class SettingsMenu extends WatchUi.Menu2 {
 
     function initialize() {
@@ -10,6 +10,7 @@ class SettingsMenu extends WatchUi.Menu2 {
         addItem(new WatchUi.MenuItem(WatchUi.loadResource(Rez.Strings.DateTitle) as String, positionLabel(Settings.datePosition), :date, null));
         addItem(new WatchUi.MenuItem(WatchUi.loadResource(Rez.Strings.BatteryTitle) as String, positionLabel(Settings.batteryPosition), :battery, null));
         addItem(new WatchUi.MenuItem(WatchUi.loadResource(Rez.Strings.DialTitle) as String, dialLabel(Settings.dial), :dial, null));
+        addItem(new WatchUi.ToggleMenuItem(WatchUi.loadResource(Rez.Strings.SecondsTitle) as String, null, :seconds, Settings.secondsHand, null));
     }
 
     // Shows the current choices again (one choice can move the other)
@@ -41,6 +42,12 @@ class SettingsMenuDelegate extends WatchUi.Menu2InputDelegate {
     // Opens the list of choices for the selected setting, starting at its current choice
     function onSelect(item as MenuItem) as Void {
         var id = item.getId() as Symbol;
+        if (id == :seconds) {
+            // The switch has already flipped itself; save its new state
+            Settings.setSecondsHand((item as WatchUi.ToggleMenuItem).isEnabled());
+            return;
+        }
+
         var list = new WatchUi.Menu2({:title => item.getLabel()});
 
         if (id == :dial) {

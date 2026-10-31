@@ -4,4 +4,5 @@
     <property id="BatteryPosition" type="number">0</property>
     <!-- What the dial shows: 0 = outline and hour marks, 1 = marks only, 2 = neither (Settings.Dial) -->
     <property id="Dial" type="number">0</property>
+    <property id="SecondsHand" type="boolean">true</property>
 </properties>

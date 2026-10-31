@@ -21,4 +21,7 @@
             <listEntry value="2">@Strings.DialNone</listEntry>
         </settingConfig>
     </setting>
+    <setting propertyKey="@Properties.SecondsHand" title="@Strings.SecondsTitle">
+        <settingConfig type="boolean" />
+    </setting>
 </settings>

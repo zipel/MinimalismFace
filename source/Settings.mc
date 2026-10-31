@@ -2,9 +2,9 @@ import Toybox.Application;
 import Toybox.Lang;
 
 // The face's settings: where the date goes and where the battery level goes (each picks one of the
-// two fields, above or below the centre, or Off), and how much of the dial is drawn. They are stored
-// as properties, so the settings menu on the watch and the Connect IQ app on the phone
-// (resources/settings) change the same values.
+// two fields, above or below the centre, or Off), how much of the dial is drawn, and whether the
+// seconds hand shows. They are stored as properties, so the settings menu on the watch and the
+// Connect IQ app on the phone (resources/settings) change the same values.
 module Settings {
 
     // Stored numbers; settings.xml uses the same values for the phone's lists
@@ -24,6 +24,7 @@ module Settings {
     var datePosition as Position = POSITION_BOTTOM;
     var batteryPosition as Position = POSITION_OFF;
     var dial as Dial = DIAL_OUTLINE_AND_MARKS;
+    var secondsHand as Boolean = true;
 
     // Reads the settings from storage. The phone app can put the date and the battery in the same
     // field; then the one that was just changed keeps it, and the other moves to the remaining field.
@@ -46,6 +47,7 @@ module Settings {
         batteryPosition = battery;
         rememberDatePosition();
         dial = readChoice("Dial", DIAL_OUTLINE_AND_MARKS) as Dial;
+        secondsHand = readSwitch("SecondsHand", true);
     }
 
     // Choices made in the settings menu on the watch. Moving one field into the place the other
@@ -75,6 +77,11 @@ module Settings {
         writeChoice("Dial", choice);
     }
 
+    function setSecondsHand(on as Boolean) as Void {
+        secondsHand = on;
+        writeChoice("SecondsHand", on);
+    }
+
     // The top field for the bottom one and the other way round
     function otherField(position as Position) as Position {
         return position == POSITION_TOP ? POSITION_BOTTOM : POSITION_TOP;
@@ -98,7 +105,26 @@ module Settings {
         return defaultValue;
     }
 
-    function writeChoice(key as String, value as Number) as Void {
+    // An on/off setting, or the default if it is missing. Text and numbers from older phone apps
+    // are accepted too.
+    function readSwitch(key as String, defaultValue as Boolean) as Boolean {
+        var value = null;
+        try {
+            value = Application.Properties.getValue(key);
+        } catch (e instanceof Lang.Exception) {
+            return defaultValue;
+        }
+        if (value instanceof Boolean) {
+            return value;
+        } else if (value instanceof Number) {
+            return value != 0;
+        } else if (value instanceof Lang.String) {
+            return value.equals("true");
+        }
+        return defaultValue;
+    }
+
+    function writeChoice(key as String, value as Number or Boolean) as Void {
         try {
             Application.Properties.setValue(key, value);
         } catch (e instanceof Lang.Exception) {
