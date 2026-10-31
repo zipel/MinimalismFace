@@ -172,25 +172,26 @@ class MinimalismFaceView extends WatchUi.WatchFace {
         dc.drawText(x, y, Graphics.FONT_TINY, dateStr, Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
     }
 
-    // Battery level: a horizontal battery filled to the charge, then the percentage, e.g. "22%",
-    // centred together on (x, y). The battery is sized from the font so it matches the digits.
+    // Battery level: a horizontal battery outline with the charge inside it, e.g. "22", centred
+    // on (x, y). The battery is sized to fit "100" in the small font.
     private function drawBattery(dc as Dc, x as Number, y as Float) as Void {
-        var font = Graphics.FONT_TINY;
+        var font = Graphics.FONT_XTINY;
         var level = System.getSystemStats().battery;
-        var text = (level + 0.5).toNumber().toString() + "%";
+        var text = (level + 0.5).toNumber().toString();
 
-        // Body about as tall as the digits and twice as wide, with a terminal on the right
+        // Body just taller than the digits and at least twice as wide, with a terminal on the right
+        var line = 2;
+        var pad = 1;
         var digitHeight = dc.getFontHeight(font) * 0.6;
-        var h = (digitHeight * 0.85 + 0.5).toNumber();
-        var w = h * 2;
-        var line = (h / 10 > 2) ? h / 10 : 2;
-        var pad = (h / 12 > 1) ? h / 12 : 1;
+        var h = (digitHeight + 2 * (line + pad) + 2.5).toNumber();
+        var w = dc.getTextWidthInPixels("100", font) + 2 * (line + pad) + 4;
+        if (w < 2 * h) {
+            w = 2 * h;
+        }
         var nubWidth = (h / 6 > 2) ? h / 6 : 2;
         var nubHeight = h / 2;
-        var gap = h / 3;
 
-        var textWidth = dc.getTextWidthInPixels(text, font);
-        var left = (x - (w + nubWidth + gap + textWidth) / 2.0 + 0.5).toNumber();
+        var left = (x - (w + nubWidth) / 2.0 + 0.5).toNumber();
         var top = (y - h / 2.0 + 0.5).toNumber();
 
         // Outline drawn as a filled body with its inside cleared, so it is the same on every watch
@@ -200,15 +201,8 @@ class MinimalismFaceView extends WatchUi.WatchFace {
         dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_TRANSPARENT);
         dc.fillRectangle(left + line, top + line, w - 2 * line, h - 2 * line);
 
-        // Charge level inside the outline
-        var inner = w - 2 * (line + pad);
-        var fill = (inner * level / 100.0 + 0.5).toNumber();
         dc.setColor(Graphics.COLOR_LT_GRAY, Graphics.COLOR_TRANSPARENT);
-        if (fill > 0) {
-            dc.fillRectangle(left + line + pad, top + line + pad, fill, h - 2 * (line + pad));
-        }
-
-        dc.drawText(left + w + nubWidth + gap, y, font, text, Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER);
+        dc.drawText(left + w / 2, top + h / 2, font, text, Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
     }
 
     // Always-on face for AMOLED screens. Garmin requires it to stay under 10% of the
