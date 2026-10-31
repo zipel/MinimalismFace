@@ -2,4 +2,6 @@
     <!-- Where each field goes: 0 = Off, 1 = Top, 2 = Bottom (Settings.Position in source/Settings.mc) -->
     <property id="DatePosition" type="number">2</property>
     <property id="BatteryPosition" type="number">0</property>
+    <!-- What the dial shows: 0 = outline and hour marks, 1 = marks only, 2 = neither (Settings.Dial) -->
+    <property id="Dial" type="number">0</property>
 </properties>

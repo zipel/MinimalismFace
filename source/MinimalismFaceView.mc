@@ -118,16 +118,23 @@ class MinimalismFaceView extends WatchUi.WatchFace {
         WatchUi.requestUpdate();
     }
 
-    // Outer ring and a mark for every hour. On rectangular screens the ring follows the
-    // screen's own rounded-rectangle shape, 6 px in from the edge, and the marks run along it.
+    // Outer ring and a mark for every hour, or only the marks, or nothing, as the Dial setting says.
+    // On rectangular screens the ring follows the screen's own rounded-rectangle shape, 6 px in
+    // from the edge, and the marks run along it.
     private function drawDial(dc as Dc, cx as Number, cy as Number, radius as Number) as Void {
+        if (Settings.dial == Settings.DIAL_NONE) {
+            return;
+        }
+        var outline = (Settings.dial == Settings.DIAL_OUTLINE_AND_MARKS);
         dc.setPenWidth(2);
 
         if (_rectangular) {
             var w = dc.getWidth();
             var h = dc.getHeight();
             var corner = screenCornerRadius(w, h) - 6;
-            dc.drawRoundedRectangle(6, 6, w - 12, h - 12, corner);
+            if (outline) {
+                dc.drawRoundedRectangle(6, 6, w - 12, h - 12, corner);
+            }
 
             // Each mark ends just inside the outline, where its hour's direction meets it
             var gap = radius * 0.03;
@@ -139,7 +146,9 @@ class MinimalismFaceView extends WatchUi.WatchFace {
             return;
         }
 
-        dc.drawCircle(cx, cy, radius);
+        if (outline) {
+            dc.drawCircle(cx, cy, radius);
+        }
 
         // Hour marks just inside the ring
         dc.setPenWidth(3);

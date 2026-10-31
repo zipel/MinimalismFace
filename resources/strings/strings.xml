@@ -8,4 +8,8 @@
     <string id="PositionTop">Top</string>
     <string id="PositionBottom">Bottom</string>
     <string id="PositionOff">Off</string>
+    <string id="DialTitle">Dial</string>
+    <string id="DialOutlineAndMarks">Outline and marks</string>
+    <string id="DialMarksOnly">Marks only</string>
+    <string id="DialNone">None</string>
 </strings>
