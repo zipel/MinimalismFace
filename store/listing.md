@@ -18,7 +18,7 @@ A clean analog watch face for Garmin watches.
 - Dimmed always-on mode on AMOLED screens and the Venu Sq: just thin grey hands, moving slightly every minute to protect the screen
 - On MIP screens, the full face stays on when you're not looking, just without the seconds hand
 
-Change these settings on the watch, from the face's settings in the watch face menu, or in the Connect IQ app on your phone.
+Change these settings on the watch, from the face's settings in the watch face menu, or in the Connect IQ app on your phone. On the Approach S62, the vívoactive 3 models and the vívolife, the settings are only in the Connect IQ app.
 
 No clutter: just the time, plus the battery level and the date if you want them.
 
@@ -26,7 +26,7 @@ On the Instinct Crossover AMOLED, the watch's own hands tell the time; the face 
 
 ## What's new
 
-1.3.0: Now also for Garmin's colour-screen watches from 2019 onward, like the fēnix 6 and 7, Forerunner 245, 255 and 955, vívoactive 4, Venu and Venu Sq.
+1.3.0: Added support for Garmin's colour-screen watches from 2019 onward, like the fēnix 6 and 7, Forerunner 245, 255 and 955, vívoactive 4, Venu and Venu Sq.
 
 1.2.0: A simpler battery indicator with the level inside the battery, a Dial setting to hide the outline, or the outline and the hour marks, and a setting to turn off the seconds hand.
 
