@@ -188,11 +188,12 @@ class MinimalismFaceView extends WatchUi.WatchFace {
     }
 
     // Battery level: a horizontal battery outline with the charge inside it, e.g. "22", centred
-    // on (x, y). The battery is sized to fit "100" in the small font.
+    // on (x, y). The battery is sized to fit "100" in the small font, and the number turns red
+    // at 10% or less.
     private function drawBattery(dc as Dc, x as Number, y as Float) as Void {
         var font = Graphics.FONT_XTINY;
-        var level = System.getSystemStats().battery;
-        var text = (level + 0.5).toNumber().toString();
+        var level = (System.getSystemStats().battery + 0.5).toNumber();
+        var text = level.toString();
 
         // Body just taller than the digits and at least twice as wide, with a terminal on the right
         var line = 2;
@@ -216,7 +217,7 @@ class MinimalismFaceView extends WatchUi.WatchFace {
         dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_TRANSPARENT);
         dc.fillRectangle(left + line, top + line, w - 2 * line, h - 2 * line);
 
-        dc.setColor(Graphics.COLOR_LT_GRAY, Graphics.COLOR_TRANSPARENT);
+        dc.setColor(level <= 10 ? Graphics.COLOR_RED : Graphics.COLOR_LT_GRAY, Graphics.COLOR_TRANSPARENT);
         dc.drawText(left + w / 2, top + h / 2, font, text, Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
     }
 

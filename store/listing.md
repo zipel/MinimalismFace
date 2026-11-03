@@ -13,7 +13,7 @@ A clean analog watch face for Garmin watches.
 - Clean dial with a mark for every hour, no numbers
 - Red seconds hand while you're looking at your watch, or none if you prefer
 - Optional weekday and date
-- Optional battery level indicator
+- Optional battery level indicator, with the number turning red at 10% or less
 - Dial with or without its outline, or with no outline and no hour marks
 - Dimmed always-on mode on AMOLED screens and the Venu Sq: just thin grey hands, moving slightly every minute to protect the screen
 - On MIP screens, the full face stays on when you're not looking, just without the seconds hand
@@ -25,6 +25,8 @@ No clutter: just the time, plus the battery level and the date if you want them.
 On the Instinct Crossover AMOLED, the watch's own hands tell the time; the face adds the hour marks, date and red seconds hand.
 
 ## What's new
+
+1.3.1: The number in the battery indicator turns red when the battery is at 10% or less.
 
 1.3.0: Added support for Garmin's colour-screen watches from 2019 onward, like the fēnix 6 and 7, Forerunner 245, 255 and 955, vívoactive 4, Venu and Venu Sq.
 
