@@ -49,8 +49,9 @@ class MinimalismFaceView extends WatchUi.WatchFace {
         _physicalHandsShowTime = usePhysicalHands();
         // Pick up changes made in the face's settings menu on the watch
         Settings.load();
-        // The face can start awake, without an onExitSleep() call
-        if (_isAwake) {
+        // The face can start awake, without an onExitSleep() call. But _isAwake is only a guess until
+        // the first sleep event, and starting a timer in low power crashes the face, so check first.
+        if (_isAwake && watchConfirmsAwake()) {
             startSweep();
         }
     }
@@ -148,6 +149,15 @@ class MinimalismFaceView extends WatchUi.WatchFace {
     // Called by the sweep timer
     function onSweepTick() as Void {
         WatchUi.requestUpdate();
+    }
+
+    // True if the watch says it's in high-power mode. The Venu, Venu Mercedes-Benz and D2 Air can't
+    // say, so on them the sweep only starts from onExitSleep(), at the next wrist raise.
+    private function watchConfirmsAwake() as Boolean {
+        if ((System has :getDisplayMode) && (System has :DISPLAY_MODE_HIGH_POWER)) {
+            return System.getDisplayMode() == System.DISPLAY_MODE_HIGH_POWER;
+        }
+        return false;
     }
 
     private function startSweep() as Void {
