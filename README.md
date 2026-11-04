@@ -1,8 +1,8 @@
 MinimalismFace — Simple Watch Face
 
 Overview
-- A minimal analog Connect IQ watch face for Garmin's colour-screen watches from 2019 onward (AMOLED, MIP and LCD): hour, minute and seconds hands plus the weekday and date. AMOLED screens (and the Venu Sq's LCD) get a dimmed always-on mode; MIP screens keep the full face on, without the seconds hand.
-- Settings, on the watch or in the Connect IQ app on the phone, put the date and an optional battery level above or below the centre, or turn either off, hide the dial's outline, or the outline and the hour marks, turn off the seconds hand, and, on AMOLED watches, make it sweep smoothly instead of ticking. Watches with Connect IQ older than 3.2 (the Approach S62 and the vívoactive 3 models) only have them in the app.
+- A minimal analog Connect IQ watch face for Garmin's colour-screen watches from 2019 onward (AMOLED, MIP and LCD): hour, minute and seconds hands plus up to four data fields: the weekday and date, battery level, step count and heart rate. AMOLED screens (and the Venu Sq's LCD) get a dimmed always-on mode; MIP screens keep the full face on, without the seconds hand.
+- Settings, on the watch or in the Connect IQ app on the phone, pick which data field shows at the top, right, bottom and left of the centre, each in one place at a time or not at all, hide the dial's outline, or the outline and the hour marks, turn off the seconds hand, and, on AMOLED watches, make it sweep smoothly instead of ticking. Watches with Connect IQ older than 3.2 (the Approach S62 and the vívoactive 3 models) only have them in the app.
 
 Prerequisites
 - Install the Connect IQ SDK: https://developer.garmin.com/connect-iq/sdk/
@@ -46,8 +46,8 @@ Install on a Fēnix 8 AMOLED 47mm device
   https://developer.garmin.com/connect-iq/dev-guides/overview/
 
 Files of interest
-- `source/MinimalismFaceView.mc` — watch face view; draws the dial, hands, date and battery fields, plus the dimmed always-on face.
-- `source/Settings.mc` — the settings (where the date and the battery level go, what the dial shows, and the seconds hand and its sweep), stored as app properties.
+- `source/MinimalismFaceView.mc` — watch face view; draws the dial, hands and data fields, plus the dimmed always-on face.
+- `source/Settings.mc` — the settings (which data field goes where, what the dial shows, and the seconds hand and its sweep), stored as app properties.
 - `source/SettingsMenu.mc` — the settings menu on the watch.
 - `resources/settings/` — the same settings for the Connect IQ app on the phone.
 - `resources-amoled/` — the Smooth seconds setting, which only AMOLED watches get; `monkey.jungle` adds this folder for their screen sizes.

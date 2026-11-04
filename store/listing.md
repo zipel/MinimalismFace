@@ -12,19 +12,21 @@ A clean analog watch face for Garmin watches.
 
 - Clean dial with a mark for every hour, no numbers
 - Red seconds hand while you're looking at your watch, or none if you prefer
-- Optional weekday and date
-- Optional battery level indicator, with the number turning red at 10% or less
+- Four places for data fields, at the top, right, bottom and left: weekday and date, battery level, step count and heart rate, each in one place at a time or not at all
+- The battery number turns red at 10% or less
 - Dial with or without its outline, or with no outline and no hour marks
 - Dimmed always-on mode on AMOLED screens and the Venu Sq: just thin grey hands, moving slightly every minute to protect the screen
 - On MIP screens, the full face stays on when you're not looking, just without the seconds hand
 
 Change these settings on the watch, from the face's settings in the watch face menu, or in the Connect IQ app on your phone. On the Approach S62, the vívoactive 3 models and the vívolife, the settings are only in the Connect IQ app.
 
-No clutter: just the time, plus the battery level and the date if you want them.
+No clutter: just the time, plus the data fields you want.
 
-On the Instinct Crossover AMOLED, the watch's own hands tell the time; the face adds the hour marks, date and red seconds hand.
+On the Instinct Crossover AMOLED, the watch's own hands tell the time; the face adds the hour marks, data fields and red seconds hand.
 
 ## What's new
+
+1.4.0: Two new data fields, step count and heart rate, and two new places, left and right. Top, right, bottom and left each have their own setting to pick what they show, or nothing. Your current date and battery layout carries over.
 
 1.3.2: A Smooth seconds setting on AMOLED watches, to make the seconds hand sweep instead of ticking.
 
