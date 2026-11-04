@@ -4,6 +4,8 @@
         <settingConfig type="list">
             <listEntry value="1">@Strings.FieldDate</listEntry>
             <listEntry value="2">@Strings.FieldBattery</listEntry>
+            <listEntry value="3">@Strings.FieldSteps</listEntry>
+            <listEntry value="4">@Strings.FieldHeartRate</listEntry>
             <listEntry value="0">@Strings.FieldNone</listEntry>
         </settingConfig>
     </setting>
@@ -11,6 +13,8 @@
         <settingConfig type="list">
             <listEntry value="1">@Strings.FieldDate</listEntry>
             <listEntry value="2">@Strings.FieldBattery</listEntry>
+            <listEntry value="3">@Strings.FieldSteps</listEntry>
+            <listEntry value="4">@Strings.FieldHeartRate</listEntry>
             <listEntry value="0">@Strings.FieldNone</listEntry>
         </settingConfig>
     </setting>
@@ -18,6 +22,8 @@
         <settingConfig type="list">
             <listEntry value="1">@Strings.FieldDate</listEntry>
             <listEntry value="2">@Strings.FieldBattery</listEntry>
+            <listEntry value="3">@Strings.FieldSteps</listEntry>
+            <listEntry value="4">@Strings.FieldHeartRate</listEntry>
             <listEntry value="0">@Strings.FieldNone</listEntry>
         </settingConfig>
     </setting>
@@ -25,6 +31,8 @@
         <settingConfig type="list">
             <listEntry value="1">@Strings.FieldDate</listEntry>
             <listEntry value="2">@Strings.FieldBattery</listEntry>
+            <listEntry value="3">@Strings.FieldSteps</listEntry>
+            <listEntry value="4">@Strings.FieldHeartRate</listEntry>
             <listEntry value="0">@Strings.FieldNone</listEntry>
         </settingConfig>
     </setting>

@@ -73,7 +73,7 @@ class SettingsMenuDelegate extends WatchUi.Menu2InputDelegate {
             }
         } else {
             var current = Settings.fields[id as Number];
-            var choices = [Settings.FIELD_DATE, Settings.FIELD_BATTERY, Settings.FIELD_NONE];
+            var choices = [Settings.FIELD_DATE, Settings.FIELD_BATTERY, Settings.FIELD_STEPS, Settings.FIELD_HEART_RATE, Settings.FIELD_NONE];
             for (var i = 0; i < choices.size(); i += 1) {
                 list.addItem(new WatchUi.MenuItem(fieldLabel(choices[i]), null, choices[i], null));
                 if (choices[i] == current) {
@@ -116,12 +116,16 @@ class ChoiceMenuDelegate extends WatchUi.Menu2InputDelegate {
     }
 }
 
-// What the menus show for a data field: "Date", "Battery" or "None"
+// What the menus show for a data field: "Date", "Battery", "Steps", "Heart rate" or "None"
 function fieldLabel(field as Settings.Field) as String {
     if (field == Settings.FIELD_DATE) {
         return WatchUi.loadResource(Rez.Strings.FieldDate) as String;
     } else if (field == Settings.FIELD_BATTERY) {
         return WatchUi.loadResource(Rez.Strings.FieldBattery) as String;
+    } else if (field == Settings.FIELD_STEPS) {
+        return WatchUi.loadResource(Rez.Strings.FieldSteps) as String;
+    } else if (field == Settings.FIELD_HEART_RATE) {
+        return WatchUi.loadResource(Rez.Strings.FieldHeartRate) as String;
     }
     return WatchUi.loadResource(Rez.Strings.FieldNone) as String;
 }

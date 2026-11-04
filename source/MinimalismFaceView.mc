@@ -1,3 +1,5 @@
+import Toybox.Activity;
+import Toybox.ActivityMonitor;
 import Toybox.Graphics;
 import Toybox.Lang;
 import Toybox.System;
@@ -31,6 +33,12 @@ class MinimalismFaceView extends WatchUi.WatchFace {
     // system timer: the second last drawn, and the timer's value when that second was first seen.
     private var _lastSecond as Number = -1;
     private var _secondStartedAt as Number = 0;
+
+    // The step count and heart rate, read at most once a second as the face can redraw much more
+    // often, and the time of that reading. Null means there is no reading.
+    private var _steps as Number? = null;
+    private var _heartRate as Number? = null;
+    private var _readingsTime as Number = 0;
 
     function initialize() {
         WatchFace.initialize();
@@ -231,10 +239,11 @@ class MinimalismFaceView extends WatchUi.WatchFace {
 
     // The data fields in their places around the centre, as the settings have them
     private function drawFields(dc as Dc, cx as Number, cy as Number, radius as Number) as Void {
+        refreshReadings();
         drawField(dc, Settings.fields[Settings.LOCATION_TOP], cx, cy - radius * 0.4);
-        drawField(dc, Settings.fields[Settings.LOCATION_RIGHT], cx + radius * 0.5, cy);
+        drawField(dc, Settings.fields[Settings.LOCATION_RIGHT], cx + radius * 0.47, cy);
         drawField(dc, Settings.fields[Settings.LOCATION_BOTTOM], cx, cy + radius * 0.4);
-        drawField(dc, Settings.fields[Settings.LOCATION_LEFT], cx - radius * 0.5, cy);
+        drawField(dc, Settings.fields[Settings.LOCATION_LEFT], cx - radius * 0.47, cy);
     }
 
     // One data field, centred on (x, y)
@@ -243,7 +252,45 @@ class MinimalismFaceView extends WatchUi.WatchFace {
             drawDate(dc, x, y);
         } else if (field == Settings.FIELD_BATTERY) {
             drawBattery(dc, x, y);
+        } else if (field == Settings.FIELD_STEPS) {
+            drawSteps(dc, x, y);
+        } else if (field == Settings.FIELD_HEART_RATE) {
+            drawHeartRate(dc, x, y);
         }
+    }
+
+    // Reads the step count and heart rate if they are showing and haven't been read this second
+    private function refreshReadings() as Void {
+        var now = Time.now().value();
+        if (now != _readingsTime) {
+            _readingsTime = now;
+            if (Settings.fields.indexOf(Settings.FIELD_STEPS) != -1) {
+                _steps = ActivityMonitor.getInfo().steps;
+            }
+            if (Settings.fields.indexOf(Settings.FIELD_HEART_RATE) != -1) {
+                _heartRate = readHeartRate();
+            }
+        }
+    }
+
+    // The current heart rate, or else the newest one in the last 10 minutes of the watch's history.
+    // Null if there is neither, for example when the watch has been off the wrist for a while.
+    private function readHeartRate() as Number? {
+        var info = Activity.getActivityInfo();
+        if (info != null && info.currentHeartRate != null) {
+            return info.currentHeartRate;
+        }
+        if (ActivityMonitor has :getHeartRateHistory) {
+            var history = ActivityMonitor.getHeartRateHistory(new Time.Duration(600), true);
+            var sample = history.next();
+            while (sample != null) {
+                if (sample.heartRate != ActivityMonitor.INVALID_HR_SAMPLE) {
+                    return sample.heartRate;
+                }
+                sample = history.next();
+            }
+        }
+        return null;
     }
 
     // Weekday and day of the month, e.g. "Thu 23"
@@ -286,6 +333,65 @@ class MinimalismFaceView extends WatchUi.WatchFace {
 
         dc.setColor(level <= 10 ? Graphics.COLOR_RED : Graphics.COLOR_LT_GRAY, Graphics.COLOR_TRANSPARENT);
         dc.drawText(left + w / 2, top + h / 2, font, text, Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
+    }
+
+    // Step count: two footprints and the number, e.g. "8421", centred on (x, y). The left foot is
+    // ahead of the right one, and each is an elongated sole with a smaller heel below it.
+    private function drawSteps(dc as Dc, x as Numeric, y as Numeric) as Void {
+        var height = rounded(dc.getFontHeight(Graphics.FONT_TINY) * 0.8);
+        var width = rounded(height * 0.82);
+        var left = drawNumberAfterIcon(dc, x, y, _steps, width);
+        var top = (y - height / 2.0 + 0.5).toNumber();
+
+        var footHeight = rounded(height * 0.8);
+        var behind = height - footHeight;
+        var soleWidth = rounded(height * 0.17);
+        var soleHeight = rounded(footHeight * 0.31);
+        var heelWidth = rounded(height * 0.12);
+        var heelHeight = rounded(footHeight * 0.13);
+        var heelY = footHeight - heelHeight - 1;
+        var heelIn = rounded(height * 0.03);
+        var leftFoot = left + soleWidth;
+        var rightFoot = left + width - soleWidth - 1;
+
+        dc.fillEllipse(leftFoot, top + soleHeight, soleWidth, soleHeight);
+        dc.fillEllipse(leftFoot + heelIn, top + heelY, heelWidth, heelHeight);
+        dc.fillEllipse(rightFoot, top + behind + soleHeight, soleWidth, soleHeight);
+        dc.fillEllipse(rightFoot - heelIn, top + behind + heelY, heelWidth, heelHeight);
+    }
+
+    // Heart rate: a heart and the number, e.g. "62", centred on (x, y). The heart is two circles
+    // above a shape that runs along them down to the point.
+    private function drawHeartRate(dc as Dc, x as Numeric, y as Numeric) as Void {
+        var size = rounded(dc.getFontHeight(Graphics.FONT_TINY) * 0.65);
+        var r = rounded(size * 0.28);
+        var left = drawNumberAfterIcon(dc, x, y, _heartRate, 4 * r);
+        var top = (y - size / 2.0 + 0.5).toNumber();
+
+        var middle = left + 2 * r;
+        var sideX = rounded(size * 0.49);
+        var sideY = top + rounded(size * 0.47);
+        dc.fillCircle(middle - r, top + r, r);
+        dc.fillCircle(middle + r, top + r, r);
+        dc.fillPolygon([[middle - sideX, sideY], [middle, top + r], [middle + sideX, sideY], [middle, top + size]]);
+    }
+
+    // Draws a number, or "--" if there is no reading, leaving room before it for an icon of the given
+    // width, so that together they are centred on (x, y). Returns where the icon goes, with the
+    // colour already set for it.
+    private function drawNumberAfterIcon(dc as Dc, x as Numeric, y as Numeric, value as Number?, iconWidth as Number) as Number {
+        var font = Graphics.FONT_TINY;
+        var text = (value != null) ? value.toString() : "--";
+        var gap = rounded(dc.getFontHeight(font) * 0.15);
+        var left = (x - (iconWidth + gap + dc.getTextWidthInPixels(text, font)) / 2.0 + 0.5).toNumber();
+
+        dc.setColor(Graphics.COLOR_LT_GRAY, Graphics.COLOR_TRANSPARENT);
+        dc.drawText(left + iconWidth + gap, y, font, text, Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER);
+        return left;
+    }
+
+    private function rounded(value as Numeric) as Number {
+        return (value + 0.5).toNumber();
     }
 
     // Always-on face for AMOLED screens and the Venu Sq. Garmin requires it to stay under

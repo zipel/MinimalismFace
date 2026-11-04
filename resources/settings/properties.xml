@@ -1,5 +1,5 @@
 <properties>
-    <!-- Which data field each place shows: 0 = none, 1 = date, 2 = battery (Settings.Field in source/Settings.mc) -->
+    <!-- Which data field each place shows: 0 = none, 1 = date, 2 = battery, 3 = steps, 4 = heart rate (Settings.Field in source/Settings.mc) -->
     <property id="TopField" type="number">0</property>
     <property id="RightField" type="number">0</property>
     <property id="BottomField" type="number">1</property>
