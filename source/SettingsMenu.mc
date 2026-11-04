@@ -2,7 +2,8 @@ import Toybox.Lang;
 import Toybox.WatchUi;
 
 // The face's settings menu on the watch: "Date", "Battery" and "Dial", each showing its current
-// choice underneath (selecting one opens the list of its choices), and a "Seconds hand" switch.
+// choice underneath (selecting one opens the list of its choices), and "Seconds hand" and
+// "Smooth seconds" switches.
 class SettingsMenu extends WatchUi.Menu2 {
 
     function initialize() {
@@ -11,6 +12,7 @@ class SettingsMenu extends WatchUi.Menu2 {
         addItem(new WatchUi.MenuItem(WatchUi.loadResource(Rez.Strings.BatteryTitle) as String, positionLabel(Settings.batteryPosition), :battery, null));
         addItem(new WatchUi.MenuItem(WatchUi.loadResource(Rez.Strings.DialTitle) as String, dialLabel(Settings.dial), :dial, null));
         addItem(new WatchUi.ToggleMenuItem(WatchUi.loadResource(Rez.Strings.SecondsTitle) as String, null, :seconds, Settings.secondsHand, null));
+        addItem(new WatchUi.ToggleMenuItem(WatchUi.loadResource(Rez.Strings.SmoothSecondsTitle) as String, null, :smoothSeconds, Settings.smoothSeconds, null));
     }
 
     // Shows the current choices again (one choice can move the other)
@@ -45,6 +47,10 @@ class SettingsMenuDelegate extends WatchUi.Menu2InputDelegate {
         if (id == :seconds) {
             // The switch has already flipped itself; save its new state
             Settings.setSecondsHand((item as WatchUi.ToggleMenuItem).isEnabled());
+            return;
+        }
+        if (id == :smoothSeconds) {
+            Settings.setSmoothSeconds((item as WatchUi.ToggleMenuItem).isEnabled());
             return;
         }
 

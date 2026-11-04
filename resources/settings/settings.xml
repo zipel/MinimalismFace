@@ -24,4 +24,7 @@
     <setting propertyKey="@Properties.SecondsHand" title="@Strings.SecondsTitle">
         <settingConfig type="boolean" />
     </setting>
+    <setting propertyKey="@Properties.SmoothSeconds" title="@Strings.SmoothSecondsTitle">
+        <settingConfig type="boolean" />
+    </setting>
 </settings>

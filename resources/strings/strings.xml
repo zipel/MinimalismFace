@@ -13,4 +13,5 @@
     <string id="DialMarksOnly">Marks only</string>
     <string id="DialNone">None</string>
     <string id="SecondsTitle">Seconds hand</string>
+    <string id="SmoothSecondsTitle">Smooth seconds</string>
 </strings>
