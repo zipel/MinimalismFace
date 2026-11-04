@@ -1,18 +1,19 @@
 import Toybox.Application;
 import Toybox.Lang;
 
-// The face's settings: where the date goes and where the battery level goes (each picks one of the
-// two fields, above or below the centre, or Off), how much of the dial is drawn, whether the
-// seconds hand shows, and, on AMOLED watches, whether it sweeps instead of ticking. They are stored
-// as properties, so the settings menu on the watch and the Connect IQ app on the phone
-// (resources/settings and resources-amoled) change the same values.
+// The face's settings: which data field each of the four places around the centre shows, how much
+// of the dial is drawn, whether the seconds hand shows, and, on AMOLED watches, whether it sweeps
+// instead of ticking. They are stored as properties, so the settings menu on the watch and the
+// Connect IQ app on the phone (resources/settings and resources-amoled) change the same values.
 module Settings {
 
     // Stored numbers; settings.xml uses the same values for the phone's lists
-    enum Position {
-        POSITION_OFF = 0,
-        POSITION_TOP = 1,
-        POSITION_BOTTOM = 2
+    enum Field {
+        FIELD_NONE = 0,
+        FIELD_DATE = 1,
+        FIELD_BATTERY = 2,
+        FIELD_STEPS = 3,
+        FIELD_HEART_RATE = 4
     }
 
     enum Dial {
@@ -21,59 +22,59 @@ module Settings {
         DIAL_NONE = 2
     }
 
+    // The places around the centre, in the order of fields and FIELD_KEYS
+    enum Location {
+        LOCATION_TOP = 0,
+        LOCATION_RIGHT = 1,
+        LOCATION_BOTTOM = 2,
+        LOCATION_LEFT = 3
+    }
+
+    const FIELD_KEYS = ["TopField", "RightField", "BottomField", "LeftField"];
+
     // Current choices, kept here so the face doesn't read storage every second
-    var datePosition as Position = POSITION_BOTTOM;
-    var batteryPosition as Position = POSITION_OFF;
+    var fields as Array<Field> = [FIELD_NONE, FIELD_NONE, FIELD_DATE, FIELD_NONE] as Array<Field>;
     var dial as Dial = DIAL_OUTLINE_AND_MARKS;
     var secondsHand as Boolean = true;
     var smoothSeconds as Boolean = false;
 
-    // Reads the settings from storage. The phone app can put the date and the battery in the same
-    // field; then the one that was just changed keeps it, and the other moves to the remaining field.
+    // Reads the settings from storage
     function load() as Void {
-        var date = readChoice("DatePosition", POSITION_BOTTOM) as Position;
-        var battery = readChoice("BatteryPosition", POSITION_OFF) as Position;
+        moveOldPositions();
 
-        if (date != POSITION_OFF && date == battery) {
-            if (date == lastDatePosition()) {
-                // The date stayed where it was, so the battery was moved onto it
-                date = otherField(battery);
-                writeChoice("DatePosition", date);
-            } else {
-                battery = otherField(date);
-                writeChoice("BatteryPosition", battery);
-            }
+        var chosen = fields.slice(null, null);
+        for (var i = 0; i < chosen.size(); i += 1) {
+            chosen[i] = readChoice(FIELD_KEYS[i], fields[i], FIELD_HEART_RATE) as Field;
         }
+        useFields(chosen, chosen, lastFields());
 
-        datePosition = date;
-        batteryPosition = battery;
-        rememberDatePosition();
-        dial = readChoice("Dial", DIAL_OUTLINE_AND_MARKS) as Dial;
+        dial = readChoice("Dial", DIAL_OUTLINE_AND_MARKS, DIAL_NONE) as Dial;
         secondsHand = readSwitch("SecondsHand", true);
         // Stays off on the other watches, whose builds don't have this property
         smoothSeconds = readSwitch("SmoothSeconds", false);
     }
 
-    // Choices made in the settings menu on the watch. Moving one field into the place the other
-    // uses swaps them.
-    function setDatePosition(position as Position) as Void {
-        if (position != POSITION_OFF && position == batteryPosition) {
-            batteryPosition = otherField(position);
-            writeChoice("BatteryPosition", batteryPosition);
+    // Before version 1.4.0 the date and the battery each had a position: 0 = off, 1 = top, 2 = bottom.
+    // The first time a newer version runs, this moves those choices to the top and bottom data
+    // fields, and putting the old values back to their defaults marks that as done. Those defaults
+    // need no move, as the new settings' defaults show the same thing.
+    function moveOldPositions() as Void {
+        var date = readChoice("DatePosition", 2, 2);
+        var battery = readChoice("BatteryPosition", 0, 2);
+        if (date == 2 && battery == 0) {
+            return;
         }
-        datePosition = position;
-        writeChoice("DatePosition", position);
-        rememberDatePosition();
+        writeChoice(FIELD_KEYS[LOCATION_TOP], (date == 1) ? FIELD_DATE : ((battery == 1) ? FIELD_BATTERY : FIELD_NONE));
+        writeChoice(FIELD_KEYS[LOCATION_BOTTOM], (date == 2) ? FIELD_DATE : ((battery == 2) ? FIELD_BATTERY : FIELD_NONE));
+        writeChoice("DatePosition", 2);
+        writeChoice("BatteryPosition", 0);
     }
 
-    function setBatteryPosition(position as Position) as Void {
-        if (position != POSITION_OFF && position == datePosition) {
-            datePosition = otherField(position);
-            writeChoice("DatePosition", datePosition);
-            rememberDatePosition();
-        }
-        batteryPosition = position;
-        writeChoice("BatteryPosition", position);
+    // Choices made in the settings menu on the watch
+    function setField(location as Location, field as Field) as Void {
+        var chosen = fields.slice(null, null);
+        chosen[location] = field;
+        useFields(chosen, fields, fields);
     }
 
     function setDial(choice as Dial) as Void {
@@ -91,14 +92,57 @@ module Settings {
         writeChoice("SmoothSeconds", on);
     }
 
-    // The top field for the bottom one and the other way round
-    function otherField(position as Position) as Position {
-        return position == POSITION_TOP ? POSITION_BOTTOM : POSITION_TOP;
+    // Starts using the chosen data fields, without duplicates. Saves any that differ from the stored
+    // ones, and what the face now shows if it differs from what it last showed.
+    function useFields(chosen as Array<Field>, stored as Array<Field>, last as Array<Field>) as Void {
+        var result = withoutDuplicates(chosen, last);
+        var changed = false;
+        for (var i = 0; i < result.size(); i += 1) {
+            if (result[i] != stored[i]) {
+                writeChoice(FIELD_KEYS[i], result[i]);
+            }
+            if (result[i] != last[i]) {
+                changed = true;
+            }
+        }
+        fields = result;
+        if (changed) {
+            Application.Storage.setValue("ShownFields", result as Array<Application.Storage.ValueType>);
+        }
     }
 
-    // A stored choice (0, 1 or 2 for every setting), or the default if it is missing or out of range.
+    // Each data field can show in only one place, but the phone's lists let it be chosen in several.
+    // Then a place that was just changed keeps it, and a place that wasn't takes what the changed
+    // place showed before, so the two swap. A choice in the watch's menu works the same way.
+    function withoutDuplicates(chosen as Array<Field>, last as Array<Field>) as Array<Field> {
+        var result = chosen.slice(null, null);
+        for (var i = 0; i < chosen.size(); i += 1) {
+            for (var j = 0; j < chosen.size(); j += 1) {
+                // Changed places go first, then the order of the places
+                var changedI = chosen[i] != last[i];
+                var changedJ = chosen[j] != last[j];
+                if (chosen[i] != FIELD_NONE && chosen[j] == chosen[i] && j != i
+                        && ((changedJ && !changedI) || (changedJ == changedI && j < i))) {
+                    result[i] = FIELD_NONE;
+                }
+            }
+        }
+        for (var i = 0; i < chosen.size(); i += 1) {
+            if (result[i] != chosen[i] && chosen[i] == last[i]) {
+                for (var j = 0; j < chosen.size(); j += 1) {
+                    if (chosen[j] != last[j] && last[j] != FIELD_NONE && result.indexOf(last[j]) == -1) {
+                        result[i] = last[j];
+                        break;
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
+    // A stored choice from 0 to maxValue, or the default if it is missing or out of range.
     // Some phone apps have stored numbers as text, so anything that converts to a number is accepted.
-    function readChoice(key as String, defaultValue as Number) as Number {
+    function readChoice(key as String, defaultValue as Number, maxValue as Number) as Number {
         var value = null;
         try {
             value = Application.Properties.getValue(key);
@@ -108,7 +152,7 @@ module Settings {
         if (value instanceof Lang.Long || value instanceof Lang.Float || value instanceof Lang.Double || value instanceof Lang.String) {
             value = value.toNumber();
         }
-        if (value instanceof Number && value >= 0 && value <= 2) {
+        if (value instanceof Number && value >= 0 && value <= maxValue) {
             return value;
         }
         return defaultValue;
@@ -141,20 +185,13 @@ module Settings {
         }
     }
 
-    // Where the face last showed the date. It is kept in storage because the face is restarted,
-    // for example when its settings menu on the watch closes, and load() needs it after that.
-    function lastDatePosition() as Position {
-        var value = Application.Storage.getValue("ShownDatePosition");
-        if (value instanceof Number) {
-            return value as Position;
+    // What the face last showed. It is kept in storage because the face is restarted, for example
+    // when its settings menu on the watch closes, and load() needs it after that.
+    function lastFields() as Array<Field> {
+        var stored = Application.Storage.getValue("ShownFields");
+        if (stored instanceof Array && stored.size() == fields.size()) {
+            return stored as Array<Field>;
         }
-        return datePosition;
-    }
-
-    function rememberDatePosition() as Void {
-        var stored = Application.Storage.getValue("ShownDatePosition");
-        if (!(stored instanceof Number) || stored != datePosition) {
-            Application.Storage.setValue("ShownDatePosition", datePosition);
-        }
+        return fields;
     }
 }

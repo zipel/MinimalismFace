@@ -3,11 +3,13 @@
 
     <!-- Settings, on the watch and in the Connect IQ app on the phone -->
     <string id="SettingsTitle">Settings</string>
-    <string id="DateTitle">Date</string>
-    <string id="BatteryTitle">Battery</string>
-    <string id="PositionTop">Top</string>
-    <string id="PositionBottom">Bottom</string>
-    <string id="PositionOff">Off</string>
+    <string id="TopFieldTitle">Top data field</string>
+    <string id="RightFieldTitle">Right data field</string>
+    <string id="BottomFieldTitle">Bottom data field</string>
+    <string id="LeftFieldTitle">Left data field</string>
+    <string id="FieldDate">Date</string>
+    <string id="FieldBattery">Battery</string>
+    <string id="FieldNone">None</string>
     <string id="DialTitle">Dial</string>
     <string id="DialOutlineAndMarks">Outline and marks</string>
     <string id="DialMarksOnly">Marks only</string>

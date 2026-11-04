@@ -1,8 +1,13 @@
 <properties>
-    <!-- Where each field goes: 0 = Off, 1 = Top, 2 = Bottom (Settings.Position in source/Settings.mc) -->
-    <property id="DatePosition" type="number">2</property>
-    <property id="BatteryPosition" type="number">0</property>
+    <!-- Which data field each place shows: 0 = none, 1 = date, 2 = battery (Settings.Field in source/Settings.mc) -->
+    <property id="TopField" type="number">0</property>
+    <property id="RightField" type="number">0</property>
+    <property id="BottomField" type="number">1</property>
+    <property id="LeftField" type="number">0</property>
     <!-- What the dial shows: 0 = outline and hour marks, 1 = marks only, 2 = neither (Settings.Dial) -->
     <property id="Dial" type="number">0</property>
     <property id="SecondsHand" type="boolean">true</property>
+    <!-- The settings from before version 1.4.0, kept off the settings page so Settings.moveOldPositions() can read them -->
+    <property id="DatePosition" type="number">2</property>
+    <property id="BatteryPosition" type="number">0</property>
 </properties>

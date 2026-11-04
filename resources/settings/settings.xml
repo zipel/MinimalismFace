@@ -1,17 +1,31 @@
 <!-- The face's settings page in the Connect IQ app on the phone -->
 <settings>
-    <setting propertyKey="@Properties.DatePosition" title="@Strings.DateTitle">
+    <setting propertyKey="@Properties.TopField" title="@Strings.TopFieldTitle">
         <settingConfig type="list">
-            <listEntry value="1">@Strings.PositionTop</listEntry>
-            <listEntry value="2">@Strings.PositionBottom</listEntry>
-            <listEntry value="0">@Strings.PositionOff</listEntry>
+            <listEntry value="1">@Strings.FieldDate</listEntry>
+            <listEntry value="2">@Strings.FieldBattery</listEntry>
+            <listEntry value="0">@Strings.FieldNone</listEntry>
         </settingConfig>
     </setting>
-    <setting propertyKey="@Properties.BatteryPosition" title="@Strings.BatteryTitle">
+    <setting propertyKey="@Properties.RightField" title="@Strings.RightFieldTitle">
         <settingConfig type="list">
-            <listEntry value="1">@Strings.PositionTop</listEntry>
-            <listEntry value="2">@Strings.PositionBottom</listEntry>
-            <listEntry value="0">@Strings.PositionOff</listEntry>
+            <listEntry value="1">@Strings.FieldDate</listEntry>
+            <listEntry value="2">@Strings.FieldBattery</listEntry>
+            <listEntry value="0">@Strings.FieldNone</listEntry>
+        </settingConfig>
+    </setting>
+    <setting propertyKey="@Properties.BottomField" title="@Strings.BottomFieldTitle">
+        <settingConfig type="list">
+            <listEntry value="1">@Strings.FieldDate</listEntry>
+            <listEntry value="2">@Strings.FieldBattery</listEntry>
+            <listEntry value="0">@Strings.FieldNone</listEntry>
+        </settingConfig>
+    </setting>
+    <setting propertyKey="@Properties.LeftField" title="@Strings.LeftFieldTitle">
+        <settingConfig type="list">
+            <listEntry value="1">@Strings.FieldDate</listEntry>
+            <listEntry value="2">@Strings.FieldBattery</listEntry>
+            <listEntry value="0">@Strings.FieldNone</listEntry>
         </settingConfig>
     </setting>
     <setting propertyKey="@Properties.Dial" title="@Strings.DialTitle">

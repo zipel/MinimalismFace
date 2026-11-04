@@ -229,24 +229,25 @@ class MinimalismFaceView extends WatchUi.WatchFace {
         }
     }
 
-    // The two fields above and below the centre, showing the date and the battery level
-    // wherever the settings put them
+    // The data fields in their places around the centre, as the settings have them
     private function drawFields(dc as Dc, cx as Number, cy as Number, radius as Number) as Void {
-        if (Settings.datePosition != Settings.POSITION_OFF) {
-            drawDate(dc, cx, fieldY(Settings.datePosition, cy, radius));
-        }
-        if (Settings.batteryPosition != Settings.POSITION_OFF) {
-            drawBattery(dc, cx, fieldY(Settings.batteryPosition, cy, radius));
-        }
+        drawField(dc, Settings.fields[Settings.LOCATION_TOP], cx, cy - radius * 0.4);
+        drawField(dc, Settings.fields[Settings.LOCATION_RIGHT], cx + radius * 0.5, cy);
+        drawField(dc, Settings.fields[Settings.LOCATION_BOTTOM], cx, cy + radius * 0.4);
+        drawField(dc, Settings.fields[Settings.LOCATION_LEFT], cx - radius * 0.5, cy);
     }
 
-    // Vertical centre of the top or bottom field
-    private function fieldY(position as Settings.Position, cy as Number, radius as Number) as Float {
-        return position == Settings.POSITION_TOP ? cy - radius * 0.4 : cy + radius * 0.4;
+    // One data field, centred on (x, y)
+    private function drawField(dc as Dc, field as Settings.Field, x as Numeric, y as Numeric) as Void {
+        if (field == Settings.FIELD_DATE) {
+            drawDate(dc, x, y);
+        } else if (field == Settings.FIELD_BATTERY) {
+            drawBattery(dc, x, y);
+        }
     }
 
     // Weekday and day of the month, e.g. "Thu 23"
-    private function drawDate(dc as Dc, x as Number, y as Float) as Void {
+    private function drawDate(dc as Dc, x as Numeric, y as Numeric) as Void {
         var info = Gregorian.info(Time.now(), Time.FORMAT_MEDIUM);
         var dateStr = Lang.format("$1$ $2$", [info.day_of_week, info.day]);
         dc.setColor(Graphics.COLOR_LT_GRAY, Graphics.COLOR_TRANSPARENT);
@@ -256,7 +257,7 @@ class MinimalismFaceView extends WatchUi.WatchFace {
     // Battery level: a horizontal battery outline with the charge inside it, e.g. "22", centred
     // on (x, y). The battery is sized to fit "100" in the small font, and the number turns red
     // at 10% or less.
-    private function drawBattery(dc as Dc, x as Number, y as Float) as Void {
+    private function drawBattery(dc as Dc, x as Numeric, y as Numeric) as Void {
         var font = Graphics.FONT_XTINY;
         var level = (System.getSystemStats().battery + 0.5).toNumber();
         var text = level.toString();

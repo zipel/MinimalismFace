@@ -1,15 +1,18 @@
 import Toybox.Lang;
 import Toybox.WatchUi;
 
-// The face's settings menu on the watch: "Date", "Battery" and "Dial", each showing its current
-// choice underneath (selecting one opens the list of its choices), a "Seconds hand" switch and,
-// on AMOLED watches, a "Smooth seconds" switch.
+// The face's settings menu on the watch: an entry for each of the four data fields and "Dial", each
+// showing its current choice underneath (selecting one opens the list of its choices), a
+// "Seconds hand" switch and, on AMOLED watches, a "Smooth seconds" switch.
 class SettingsMenu extends WatchUi.Menu2 {
 
     function initialize() {
         Menu2.initialize({:title => WatchUi.loadResource(Rez.Strings.SettingsTitle) as String});
-        addItem(new WatchUi.MenuItem(WatchUi.loadResource(Rez.Strings.DateTitle) as String, positionLabel(Settings.datePosition), :date, null));
-        addItem(new WatchUi.MenuItem(WatchUi.loadResource(Rez.Strings.BatteryTitle) as String, positionLabel(Settings.batteryPosition), :battery, null));
+        // A data field's entry has its place (Settings.Location) as its id
+        var titles = [Rez.Strings.TopFieldTitle, Rez.Strings.RightFieldTitle, Rez.Strings.BottomFieldTitle, Rez.Strings.LeftFieldTitle];
+        for (var i = 0; i < titles.size(); i += 1) {
+            addItem(new WatchUi.MenuItem(WatchUi.loadResource(titles[i]) as String, fieldLabel(Settings.fields[i]), i, null));
+        }
         addItem(new WatchUi.MenuItem(WatchUi.loadResource(Rez.Strings.DialTitle) as String, dialLabel(Settings.dial), :dial, null));
         addItem(new WatchUi.ToggleMenuItem(WatchUi.loadResource(Rez.Strings.SecondsTitle) as String, null, :seconds, Settings.secondsHand, null));
         // The setting's resources are only in AMOLED watches' builds (resources-amoled)
@@ -18,14 +21,15 @@ class SettingsMenu extends WatchUi.Menu2 {
         }
     }
 
-    // Shows the current choices again (one choice can move the other)
+    // Shows the current choices again (one choice can move another)
     function refresh() as Void {
-        showChoice(:date, positionLabel(Settings.datePosition));
-        showChoice(:battery, positionLabel(Settings.batteryPosition));
+        for (var i = 0; i < Settings.fields.size(); i += 1) {
+            showChoice(i, fieldLabel(Settings.fields[i]));
+        }
         showChoice(:dial, dialLabel(Settings.dial));
     }
 
-    private function showChoice(id as Symbol, label as String) as Void {
+    private function showChoice(id as Symbol or Number, label as String) as Void {
         var index = findItemById(id);
         var item = getItem(index);
         if (item != null) {
@@ -46,7 +50,7 @@ class SettingsMenuDelegate extends WatchUi.Menu2InputDelegate {
 
     // Opens the list of choices for the selected setting, starting at its current choice
     function onSelect(item as MenuItem) as Void {
-        var id = item.getId() as Symbol;
+        var id = item.getId() as Symbol or Number;
         if (id == :seconds) {
             // The switch has already flipped itself; save its new state
             Settings.setSecondsHand((item as WatchUi.ToggleMenuItem).isEnabled());
@@ -68,11 +72,11 @@ class SettingsMenuDelegate extends WatchUi.Menu2InputDelegate {
                 }
             }
         } else {
-            var current = (id == :date) ? Settings.datePosition : Settings.batteryPosition;
-            var positions = [Settings.POSITION_TOP, Settings.POSITION_BOTTOM, Settings.POSITION_OFF];
-            for (var i = 0; i < positions.size(); i += 1) {
-                list.addItem(new WatchUi.MenuItem(positionLabel(positions[i]), null, positions[i], null));
-                if (positions[i] == current) {
+            var current = Settings.fields[id as Number];
+            var choices = [Settings.FIELD_DATE, Settings.FIELD_BATTERY, Settings.FIELD_NONE];
+            for (var i = 0; i < choices.size(); i += 1) {
+                list.addItem(new WatchUi.MenuItem(fieldLabel(choices[i]), null, choices[i], null));
+                if (choices[i] == current) {
                     list.setFocus(i);
                 }
             }
@@ -89,9 +93,9 @@ class SettingsMenuDelegate extends WatchUi.Menu2InputDelegate {
 class ChoiceMenuDelegate extends WatchUi.Menu2InputDelegate {
 
     private var _menu as SettingsMenu;
-    private var _setting as Symbol;
+    private var _setting as Symbol or Number;
 
-    function initialize(menu as SettingsMenu, setting as Symbol) {
+    function initialize(menu as SettingsMenu, setting as Symbol or Number) {
         Menu2InputDelegate.initialize();
         _menu = menu;
         _setting = setting;
@@ -100,10 +104,8 @@ class ChoiceMenuDelegate extends WatchUi.Menu2InputDelegate {
     function onSelect(item as MenuItem) as Void {
         if (_setting == :dial) {
             Settings.setDial(item.getId() as Settings.Dial);
-        } else if (_setting == :date) {
-            Settings.setDatePosition(item.getId() as Settings.Position);
         } else {
-            Settings.setBatteryPosition(item.getId() as Settings.Position);
+            Settings.setField(_setting as Settings.Location, item.getId() as Settings.Field);
         }
         _menu.refresh();
         WatchUi.popView(WatchUi.SLIDE_RIGHT);
@@ -114,14 +116,14 @@ class ChoiceMenuDelegate extends WatchUi.Menu2InputDelegate {
     }
 }
 
-// What the menus show for a place on the screen: "Top", "Bottom" or "Off"
-function positionLabel(position as Settings.Position) as String {
-    if (position == Settings.POSITION_TOP) {
-        return WatchUi.loadResource(Rez.Strings.PositionTop) as String;
-    } else if (position == Settings.POSITION_BOTTOM) {
-        return WatchUi.loadResource(Rez.Strings.PositionBottom) as String;
+// What the menus show for a data field: "Date", "Battery" or "None"
+function fieldLabel(field as Settings.Field) as String {
+    if (field == Settings.FIELD_DATE) {
+        return WatchUi.loadResource(Rez.Strings.FieldDate) as String;
+    } else if (field == Settings.FIELD_BATTERY) {
+        return WatchUi.loadResource(Rez.Strings.FieldBattery) as String;
     }
-    return WatchUi.loadResource(Rez.Strings.PositionOff) as String;
+    return WatchUi.loadResource(Rez.Strings.FieldNone) as String;
 }
 
 // What the menus show for a dial choice: "Outline and marks", "Marks only" or "None"
