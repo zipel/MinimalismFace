@@ -26,6 +26,8 @@ On the Instinct Crossover AMOLED, the watch's own hands tell the time; the face 
 
 ## What's new
 
+1.3.2: A Smooth seconds setting on AMOLED watches, to make the seconds hand sweep instead of ticking.
+
 1.3.1: The number in the battery indicator turns red when the battery is at 10% or less.
 
 1.3.0: Added support for Garmin's colour-screen watches from 2019 onward, like the fēnix 6 and 7, Forerunner 245, 255 and 955, vívoactive 4, Venu and Venu Sq.
