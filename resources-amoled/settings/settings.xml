@@ -1,0 +1,6 @@
+<!-- The Smooth seconds switch on the face's settings page in the Connect IQ app on the phone -->
+<settings>
+    <setting propertyKey="@Properties.SmoothSeconds" title="@Strings.SmoothSecondsTitle">
+        <settingConfig type="boolean" />
+    </setting>
+</settings>

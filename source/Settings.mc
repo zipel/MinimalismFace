@@ -2,9 +2,10 @@ import Toybox.Application;
 import Toybox.Lang;
 
 // The face's settings: where the date goes and where the battery level goes (each picks one of the
-// two fields, above or below the centre, or Off), how much of the dial is drawn, and whether the
-// seconds hand shows. They are stored as properties, so the settings menu on the watch and the
-// Connect IQ app on the phone (resources/settings) change the same values.
+// two fields, above or below the centre, or Off), how much of the dial is drawn, whether the
+// seconds hand shows, and, on AMOLED watches, whether it sweeps instead of ticking. They are stored
+// as properties, so the settings menu on the watch and the Connect IQ app on the phone
+// (resources/settings and resources-amoled) change the same values.
 module Settings {
 
     // Stored numbers; settings.xml uses the same values for the phone's lists
@@ -25,6 +26,7 @@ module Settings {
     var batteryPosition as Position = POSITION_OFF;
     var dial as Dial = DIAL_OUTLINE_AND_MARKS;
     var secondsHand as Boolean = true;
+    var smoothSeconds as Boolean = false;
 
     // Reads the settings from storage. The phone app can put the date and the battery in the same
     // field; then the one that was just changed keeps it, and the other moves to the remaining field.
@@ -48,6 +50,8 @@ module Settings {
         rememberDatePosition();
         dial = readChoice("Dial", DIAL_OUTLINE_AND_MARKS) as Dial;
         secondsHand = readSwitch("SecondsHand", true);
+        // Stays off on the other watches, whose builds don't have this property
+        smoothSeconds = readSwitch("SmoothSeconds", false);
     }
 
     // Choices made in the settings menu on the watch. Moving one field into the place the other
@@ -80,6 +84,11 @@ module Settings {
     function setSecondsHand(on as Boolean) as Void {
         secondsHand = on;
         writeChoice("SecondsHand", on);
+    }
+
+    function setSmoothSeconds(on as Boolean) as Void {
+        smoothSeconds = on;
+        writeChoice("SmoothSeconds", on);
     }
 
     // The top field for the bottom one and the other way round

@@ -4,9 +4,13 @@ import Toybox.System;
 import Toybox.Math;
 import Toybox.Time;
 import Toybox.Time.Gregorian;
+import Toybox.Timer;
 import Toybox.WatchUi;
 
 class MinimalismFaceView extends WatchUi.WatchFace {
+
+    // How often the face redraws while the seconds hand sweeps, in milliseconds
+    private const SWEEP_INTERVAL_MS = 50;
 
     // True while the watch is in high-power mode (about 10 seconds after a wrist gesture).
     // While asleep, onUpdate() is only called once a minute.
@@ -18,6 +22,15 @@ class MinimalismFaceView extends WatchUi.WatchFace {
 
     // True on rectangular screens (Venu Sq, Venu Sq 2, Venu X1), where the dial follows the screen's shape
     private var _rectangular as Boolean = false;
+
+    // Redraws the face between the system's once-a-second updates. Watch faces only get timers
+    // in high-power mode, so it runs while awake, with the seconds hand on and set to sweep.
+    private var _sweepTimer as Timer.Timer? = null;
+
+    // The clock only gives whole seconds, so the hand's position within a second comes from the
+    // system timer: the second last drawn, and the timer's value when that second was first seen.
+    private var _lastSecond as Number = -1;
+    private var _secondStartedAt as Number = 0;
 
     function initialize() {
         WatchFace.initialize();
@@ -36,6 +49,11 @@ class MinimalismFaceView extends WatchUi.WatchFace {
         _physicalHandsShowTime = usePhysicalHands();
         // Pick up changes made in the face's settings menu on the watch
         Settings.load();
+        // The face can start awake, without an onExitSleep() call. But _isAwake is only a guess until
+        // the first sleep event, and starting a timer in low power crashes the face, so check first.
+        if (_isAwake && watchConfirmsAwake()) {
+            startSweep();
+        }
     }
 
     // Update the view
@@ -89,7 +107,8 @@ class MinimalismFaceView extends WatchUi.WatchFace {
         // on a classic watch.
         var showSeconds = _isAwake && Settings.secondsHand;
         if (showSeconds) {
-            var secondAngleDeg = 90 - clockTime.sec * 6;
+            var seconds = (_sweepTimer != null) ? sweepSeconds(clockTime.sec) : clockTime.sec;
+            var secondAngleDeg = 90 - seconds * 6;
             dc.setColor(Graphics.COLOR_RED, Graphics.COLOR_TRANSPARENT);
             dc.setPenWidth(2);
             drawRadialLine(dc, cx, cy, secondAngleDeg, 0, radius * 0.88);
@@ -109,11 +128,13 @@ class MinimalismFaceView extends WatchUi.WatchFace {
     // state of this View here. This includes freeing resources from
     // memory.
     function onHide() as Void {
+        stopSweep();
     }
 
     // The user has just looked at their watch: back to the full face, updated every second.
     function onExitSleep() as Void {
         _isAwake = true;
+        startSweep();
         WatchUi.requestUpdate();
     }
 
@@ -121,7 +142,52 @@ class MinimalismFaceView extends WatchUi.WatchFace {
     // face replaces the bright one immediately, not at the next minute.
     function onEnterSleep() as Void {
         _isAwake = false;
+        stopSweep();
         WatchUi.requestUpdate();
+    }
+
+    // Called by the sweep timer
+    function onSweepTick() as Void {
+        WatchUi.requestUpdate();
+    }
+
+    // True if the watch says it's in high-power mode. The Venu, Venu Mercedes-Benz and D2 Air can't
+    // say, so on them the sweep only starts from onExitSleep(), at the next wrist raise.
+    private function watchConfirmsAwake() as Boolean {
+        if ((System has :getDisplayMode) && (System has :DISPLAY_MODE_HIGH_POWER)) {
+            return System.getDisplayMode() == System.DISPLAY_MODE_HIGH_POWER;
+        }
+        return false;
+    }
+
+    private function startSweep() as Void {
+        if (_sweepTimer == null && Settings.secondsHand && Settings.smoothSeconds) {
+            // Forget the last second, so a stale start time isn't used for this one
+            _lastSecond = -1;
+            var timer = new Timer.Timer();
+            timer.start(method(:onSweepTick), SWEEP_INTERVAL_MS, true);
+            _sweepTimer = timer;
+        }
+    }
+
+    private function stopSweep() as Void {
+        var timer = _sweepTimer;
+        if (timer != null) {
+            timer.stop();
+            _sweepTimer = null;
+        }
+    }
+
+    // The current second with its fraction, e.g. 12.4. Held just short of the next second, so the
+    // hand never runs ahead of the clock and jumps back.
+    private function sweepSeconds(second as Number) as Float {
+        var now = System.getTimer();
+        if (second != _lastSecond) {
+            _lastSecond = second;
+            _secondStartedAt = now;
+        }
+        var fraction = (now - _secondStartedAt) / 1000.0;
+        return second + (fraction < 0.99 ? fraction : 0.99);
     }
 
     // Outer ring and a mark for every hour, or only the marks, or nothing, as the Dial setting says.
