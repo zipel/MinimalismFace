@@ -1,0 +1,4 @@
+<!-- The Smooth seconds setting, only on AMOLED watches: monkey.jungle adds this folder for their screen sizes -->
+<properties>
+    <property id="SmoothSeconds" type="boolean">false</property>
+</properties>

@@ -1,5 +1,16 @@
 project.manifest = manifest.xml
 
+# The Smooth seconds setting redraws the whole face many times a second, so only AMOLED watches get
+# it (resources-amoled). Every watch with these screen sizes is AMOLED, and none of the others is;
+# an AMOLED watch with a new screen size needs a line here.
+rectangle-320x360.resourcePath = $(rectangle-320x360.resourcePath);resources-amoled
+rectangle-448x486.resourcePath = $(rectangle-448x486.resourcePath);resources-amoled
+round-360x360.resourcePath = $(round-360x360.resourcePath);resources-amoled
+round-390x390.resourcePath = $(round-390x390.resourcePath);resources-amoled
+round-416x416.resourcePath = $(round-416x416.resourcePath);resources-amoled
+round-454x454.resourcePath = $(round-454x454.resourcePath);resources-amoled
+round-466x466.resourcePath = $(round-466x466.resourcePath);resources-amoled
+
 # The launcher icon is drawn at each watch's own size, from the system_size__launch_icon style in
 # the watch's Garmin profile (see resources/drawables/drawables.xml). These older watches' profiles
 # don't have that style, so the files in personality/ give it to them, at the size in their profile.
