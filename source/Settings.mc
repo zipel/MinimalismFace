@@ -130,7 +130,7 @@ module Settings {
         for (var i = 0; i < chosen.size(); i += 1) {
             if (result[i] != chosen[i] && chosen[i] == last[i]) {
                 for (var j = 0; j < chosen.size(); j += 1) {
-                    if (chosen[j] != last[j] && last[j] != FIELD_NONE && result.indexOf(last[j]) == -1) {
+                    if (chosen[j] == chosen[i] && chosen[j] != last[j] && last[j] != FIELD_NONE && result.indexOf(last[j]) == -1) {
                         result[i] = last[j];
                         break;
                     }
