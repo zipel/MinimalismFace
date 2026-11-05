@@ -40,6 +40,12 @@ class MinimalismFaceView extends WatchUi.WatchFace {
     private var _heartRate as Number? = null;
     private var _readingsTime as Number = 0;
 
+    // The heart's outline and where it was worked out for. It only changes when the heart moves, and
+    // working it out takes more than drawing it, which the face can do about 20 times a second.
+    private var _heartOutline as Array<Graphics.Point2D>? = null;
+    private var _heartLeft as Number = 0;
+    private var _heartTop as Number = 0;
+
     function initialize() {
         WatchFace.initialize();
         _rectangular = System.getDeviceSettings().screenShape == System.SCREEN_SHAPE_RECTANGLE;
@@ -361,20 +367,40 @@ class MinimalismFaceView extends WatchUi.WatchFace {
         dc.fillEllipse(rightFoot - heelIn, top + behind + heelY, heelWidth, heelHeight);
     }
 
-    // Heart rate: a heart and the number, e.g. "62", centred on (x, y). The heart is two circles
-    // above a shape that runs along them down to the point.
+    // Heart rate: a heart and the number, e.g. "62", centred on (x, y)
     private function drawHeartRate(dc as Dc, x as Numeric, y as Numeric) as Void {
         var size = rounded(dc.getFontHeight(Graphics.FONT_TINY) * 0.65);
-        var r = rounded(size * 0.28);
-        var left = drawNumberAfterIcon(dc, x, y, _heartRate, 4 * r);
+        var halfWidth = rounded(size * 0.558);
+        var left = drawNumberAfterIcon(dc, x, y, _heartRate, 2 * halfWidth);
         var top = (y - size / 2.0 + 0.5).toNumber();
 
-        var middle = left + 2 * r;
-        var sideX = rounded(size * 0.49);
-        var sideY = top + rounded(size * 0.47);
-        dc.fillCircle(middle - r, top + r, r);
-        dc.fillCircle(middle + r, top + r, r);
-        dc.fillPolygon([[middle - sideX, sideY], [middle, top + r], [middle + sideX, sideY], [middle, top + size]]);
+        var outline = _heartOutline;
+        if (outline == null || left != _heartLeft || top != _heartTop) {
+            outline = heartOutline(left + halfWidth, top, size);
+            _heartOutline = outline;
+            _heartLeft = left;
+            _heartTop = top;
+        }
+        dc.fillPolygon(outline);
+    }
+
+    // The heart as one outline, as separate shapes don't line up exactly where they join: from the
+    // point up and round the left lobe to the dip in the middle, then the same on the right in reverse.
+    private function heartOutline(middle as Number, top as Number, size as Number) as Array<Graphics.Point2D> {
+        var r = size * 0.28;
+        var steps = 12;
+        var outline = new [2 * steps + 2] as Array<Graphics.Point2D>;
+        outline[0] = [middle, top + size];
+        for (var i = 0; i <= steps; i += 1) {
+            // Round a lobe's circle, in degrees with y running down: 137.5 is where the straight side
+            // from the point meets the circle, and 360 is the dip
+            var angle = (137.5 + 222.5 * i / steps) * Math.PI / 180;
+            var sideways = rounded(r - r * Math.cos(angle));
+            var down = rounded(r + r * Math.sin(angle));
+            outline[1 + i] = [middle - sideways, top + down];
+            outline[2 * steps + 1 - i] = [middle + sideways, top + down];
+        }
+        return outline;
     }
 
     // Draws a number, or "--" if there is no reading, leaving room before it for an icon of the given
