@@ -240,10 +240,11 @@ class MinimalismFaceView extends WatchUi.WatchFace {
     // The data fields in their places around the centre, as the settings have them
     private function drawFields(dc as Dc, cx as Number, cy as Number, radius as Number) as Void {
         refreshReadings();
-        drawField(dc, Settings.fields[Settings.LOCATION_TOP], cx, cy - radius * 0.4);
-        drawField(dc, Settings.fields[Settings.LOCATION_RIGHT], cx + radius * 0.47, cy);
-        drawField(dc, Settings.fields[Settings.LOCATION_BOTTOM], cx, cy + radius * 0.4);
-        drawField(dc, Settings.fields[Settings.LOCATION_LEFT], cx - radius * 0.47, cy);
+        var distance = radius * 0.47;
+        drawField(dc, Settings.fields[Settings.LOCATION_TOP], cx, cy - distance);
+        drawField(dc, Settings.fields[Settings.LOCATION_RIGHT], cx + distance, cy);
+        drawField(dc, Settings.fields[Settings.LOCATION_BOTTOM], cx, cy + distance);
+        drawField(dc, Settings.fields[Settings.LOCATION_LEFT], cx - distance, cy);
     }
 
     // One data field, centred on (x, y)
