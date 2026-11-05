@@ -26,7 +26,7 @@ On the Instinct Crossover AMOLED, the watch's own hands tell the time; the face 
 
 ## What's new
 
-1.4.0: Two new data fields, step count and heart rate, and two new places, left and right. Top, right, bottom and left each have their own setting to pick what they show, or nothing. Your current date and battery layout carries over.
+1.4.0: Two new data fields, step count and heart rate, and two new locations. Top, right, bottom and left each have their own setting to pick what they show, or nothing. Your current date and battery layout carries over.
 
 1.3.2: A Smooth seconds setting on AMOLED watches, to make the seconds hand sweep instead of ticking.
 
