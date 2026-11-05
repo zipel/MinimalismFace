@@ -2,7 +2,7 @@ MinimalismFace — Simple Watch Face
 
 Overview
 - A minimal analog Connect IQ watch face for Garmin's colour-screen watches from 2019 onward (AMOLED, MIP and LCD): hour, minute and seconds hands plus up to four data fields: the weekday and date, battery level, step count and heart rate. AMOLED screens (and the Venu Sq's LCD) get a dimmed always-on mode; MIP screens keep the full face on, without the seconds hand.
-- Settings, on the watch or in the Connect IQ app on the phone, pick which data field shows at the top, right, bottom and left of the centre, each in one place at a time or not at all, hide the dial's outline, or the outline and the hour marks, turn off the seconds hand, and, on AMOLED watches, make it sweep smoothly instead of ticking. Watches with Connect IQ older than 3.2 (the Approach S62 and the vívoactive 3 models) only have them in the app.
+- Settings, on the watch or in the Connect IQ app on the phone, pick which data field shows at the top, right, bottom and left of the centre, each in one place at a time or not at all, hide the dial's outline, or the outline and the hour marks, turn off the seconds hand, and, on AMOLED watches, make it sweep smoothly instead of ticking. Watches with Connect IQ older than 3.2 (the Approach S62, the vívoactive 3 models and the vívolife) only have them in the app.
 
 Prerequisites
 - Install the Connect IQ SDK: https://developer.garmin.com/connect-iq/sdk/
