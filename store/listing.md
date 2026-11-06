@@ -14,7 +14,7 @@ A clean analog watch face for Garmin watches.
 - Red seconds hand while you're looking at your watch, or none if you prefer
 - Four places for data fields, at the top, right, bottom and left: weekday and date, battery level, step count and heart rate, each in one place at a time or not at all
 - The battery number turns red at 10% or less
-- Dial with its outline and hour marks, only the marks, the marks with the numbers 12, 3, 6 and 9 replacing four of them, only those numbers, or nothing at all
+- Dial with its outline and hour marks, only the marks, the marks with the numbers 12, 3, 6 and 9 replacing four of them, all twelve numbers, or nothing at all
 - Dimmed always-on mode on AMOLED screens and the Venu Sq: just thin grey hands, moving slightly every minute to protect the screen
 - On MIP screens, the full face stays on when you're not looking, just without the seconds hand
 
@@ -26,7 +26,7 @@ On the Instinct Crossover AMOLED, the watch's own hands tell the time; the face 
 
 ## What's new
 
-1.5.0: Two new Dial choices: the hour marks with the numbers 12, 3, 6 and 9 replacing four of them, or only those numbers. The step count is more minimal: from 1,000 steps on it shows 1K, 1.5K, 2K and so on.
+1.5.0: Two new Dial choices: the hour marks with the numbers 12, 3, 6 and 9 replacing four of them, or all twelve numbers. The step count is more minimal: from 1,000 steps on it shows whole thousands, like 1K, 6K or 12K.
 
 1.4.0: Two new data fields, step count and heart rate, and two new locations. Top, right, bottom and left each have their own setting to pick what they show, or nothing. Your current date and battery layout carries over.
 
