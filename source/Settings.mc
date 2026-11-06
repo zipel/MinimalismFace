@@ -1,8 +1,8 @@
 import Toybox.Application;
 import Toybox.Lang;
 
-// The face's settings: which data field each of the four places around the centre shows, how much
-// of the dial is drawn, whether the seconds hand shows, and, on AMOLED watches, whether it sweeps
+// The face's settings: which data field each of the four places around the centre shows, what the
+// dial shows, whether the seconds hand shows, and, on AMOLED watches, whether it sweeps
 // instead of ticking. They are stored as properties, so the settings menu on the watch and the
 // Connect IQ app on the phone (resources/settings and resources-amoled) change the same values.
 module Settings {
@@ -19,7 +19,9 @@ module Settings {
     enum Dial {
         DIAL_OUTLINE_AND_MARKS = 0,
         DIAL_MARKS_ONLY = 1,
-        DIAL_NONE = 2
+        DIAL_NONE = 2,
+        DIAL_MARKS_AND_NUMBERS = 3,
+        DIAL_NUMBERS_ONLY = 4
     }
 
     // The places around the centre, in the order of fields and FIELD_KEYS
@@ -48,7 +50,7 @@ module Settings {
         }
         useFields(chosen, chosen, lastFields());
 
-        dial = readChoice("Dial", DIAL_OUTLINE_AND_MARKS, DIAL_NONE) as Dial;
+        dial = readChoice("Dial", DIAL_OUTLINE_AND_MARKS, DIAL_NUMBERS_ONLY) as Dial;
         secondsHand = readSwitch("SecondsHand", true);
         // Stays off on the other watches, whose builds don't have this property
         smoothSeconds = readSwitch("SmoothSeconds", false);

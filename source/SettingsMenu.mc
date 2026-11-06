@@ -64,7 +64,7 @@ class SettingsMenuDelegate extends WatchUi.Menu2InputDelegate {
         var list = new WatchUi.Menu2({:title => item.getLabel()});
 
         if (id == :dial) {
-            var dials = [Settings.DIAL_OUTLINE_AND_MARKS, Settings.DIAL_MARKS_ONLY, Settings.DIAL_NONE];
+            var dials = [Settings.DIAL_OUTLINE_AND_MARKS, Settings.DIAL_MARKS_ONLY, Settings.DIAL_MARKS_AND_NUMBERS, Settings.DIAL_NUMBERS_ONLY, Settings.DIAL_NONE];
             for (var i = 0; i < dials.size(); i += 1) {
                 list.addItem(new WatchUi.MenuItem(dialLabel(dials[i]), null, dials[i], null));
                 if (dials[i] == Settings.dial) {
@@ -130,10 +130,15 @@ function fieldLabel(field as Settings.Field) as String {
     return WatchUi.loadResource(Rez.Strings.FieldNone) as String;
 }
 
-// What the menus show for a dial choice: "Outline and marks", "Marks only" or "None"
+// What the menus show for a dial choice: "Outline and marks", "Marks only", "Marks and numbers",
+// "Numbers only" or "None"
 function dialLabel(dial as Settings.Dial) as String {
     if (dial == Settings.DIAL_MARKS_ONLY) {
         return WatchUi.loadResource(Rez.Strings.DialMarksOnly) as String;
+    } else if (dial == Settings.DIAL_MARKS_AND_NUMBERS) {
+        return WatchUi.loadResource(Rez.Strings.DialMarksAndNumbers) as String;
+    } else if (dial == Settings.DIAL_NUMBERS_ONLY) {
+        return WatchUi.loadResource(Rez.Strings.DialNumbersOnly) as String;
     } else if (dial == Settings.DIAL_NONE) {
         return WatchUi.loadResource(Rez.Strings.DialNone) as String;
     }

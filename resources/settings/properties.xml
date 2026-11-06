@@ -4,7 +4,7 @@
     <property id="RightField" type="number">0</property>
     <property id="BottomField" type="number">1</property>
     <property id="LeftField" type="number">0</property>
-    <!-- What the dial shows: 0 = outline and hour marks, 1 = marks only, 2 = neither (Settings.Dial) -->
+    <!-- What the dial shows: 0 = outline and hour marks, 1 = marks only, 2 = nothing, 3 = marks and numbers, 4 = numbers only (Settings.Dial) -->
     <property id="Dial" type="number">0</property>
     <property id="SecondsHand" type="boolean">true</property>
     <!-- The settings from before version 1.4.0, kept off the settings page so Settings.moveOldPositions() can read them -->

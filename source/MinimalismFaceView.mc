@@ -204,14 +204,18 @@ class MinimalismFaceView extends WatchUi.WatchFace {
         return second + (fraction < 0.99 ? fraction : 0.99);
     }
 
-    // Outer ring and a mark for every hour, or only the marks, or nothing, as the Dial setting says.
-    // On rectangular screens the ring follows the screen's own rounded-rectangle shape, 6 px in
-    // from the edge, and the marks run along it.
+    // Outer ring and a mark for every hour, or only the marks, or the marks with the numbers 12, 3, 6
+    // and 9 replacing theirs, or only those numbers, or nothing, as the Dial setting says. On
+    // rectangular screens the ring follows the screen's own rounded-rectangle shape, 6 px in from the
+    // edge, and the marks and numbers run along it.
     private function drawDial(dc as Dc, cx as Number, cy as Number, radius as Number) as Void {
-        if (Settings.dial == Settings.DIAL_NONE) {
+        var dial = Settings.dial;
+        if (dial == Settings.DIAL_NONE) {
             return;
         }
-        var outline = (Settings.dial == Settings.DIAL_OUTLINE_AND_MARKS);
+        var outline = (dial == Settings.DIAL_OUTLINE_AND_MARKS);
+        var marks = (dial != Settings.DIAL_NUMBERS_ONLY);
+        var numbers = (dial == Settings.DIAL_MARKS_AND_NUMBERS || dial == Settings.DIAL_NUMBERS_ONLY);
         dc.setPenWidth(2);
 
         if (_rectangular) {
@@ -224,10 +228,17 @@ class MinimalismFaceView extends WatchUi.WatchFace {
 
             // Each mark ends just inside the outline, where its hour's direction meets it
             var gap = radius * 0.03;
+            var reachX = cx - 6 - gap;
+            var reachY = cy - 6 - gap;
             dc.setPenWidth(3);
             for (var i = 0; i < 12; i += 1) {
-                var edge = distanceToRoundedRect(i * 30, cx - 6 - gap, cy - 6 - gap, corner - gap);
-                drawRadialLine(dc, cx, cy, i * 30, edge - radius * 0.07, edge);
+                if (marks && (!numbers || i % 3 != 0)) {
+                    var edge = distanceToRoundedRect(i * 30, reachX, reachY, corner - gap);
+                    drawRadialLine(dc, cx, cy, i * 30, edge - radius * 0.07, edge);
+                }
+            }
+            if (numbers) {
+                drawHourNumbers(dc, cx, cy, reachX, reachY);
             }
             return;
         }
@@ -236,11 +247,29 @@ class MinimalismFaceView extends WatchUi.WatchFace {
             dc.drawCircle(cx, cy, radius);
         }
 
-        // Hour marks just inside the ring
+        // Hour marks just inside the ring. Counting from 3 o'clock, every third one is where a number goes.
         dc.setPenWidth(3);
         for (var i = 0; i < 12; i += 1) {
-            drawRadialLine(dc, cx, cy, i * 30, radius * 0.90, radius * 0.97);
+            if (marks && (!numbers || i % 3 != 0)) {
+                drawRadialLine(dc, cx, cy, i * 30, radius * 0.90, radius * 0.97);
+            }
         }
+        if (numbers) {
+            drawHourNumbers(dc, cx, cy, radius * 0.97, radius * 0.97);
+        }
+    }
+
+    // The numbers 12, 3, 6 and 9, each with its outer edge as far out as the marks reach: reachX to the
+    // sides, and reachY up and down
+    private function drawHourNumbers(dc as Dc, cx as Number, cy as Number, reachX as Numeric, reachY as Numeric) as Void {
+        var font = Graphics.FONT_TINY;
+        // Digits are about 60% of the font's height, in the middle of it
+        var halfDigit = dc.getFontHeight(font) * 0.3;
+        dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
+        dc.drawText(cx, cy - reachY + halfDigit, font, "12", Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
+        dc.drawText(cx + reachX, cy, font, "3", Graphics.TEXT_JUSTIFY_RIGHT | Graphics.TEXT_JUSTIFY_VCENTER);
+        dc.drawText(cx, cy + reachY - halfDigit, font, "6", Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
+        dc.drawText(cx - reachX, cy, font, "9", Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER);
     }
 
     // The data fields in their places around the centre, as the settings have them
