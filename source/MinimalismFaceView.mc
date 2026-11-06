@@ -34,10 +34,10 @@ class MinimalismFaceView extends WatchUi.WatchFace {
     private var _lastSecond as Number = -1;
     private var _secondStartedAt as Number = 0;
 
-    // The step count and heart rate, read at most once a second as the face can redraw much more
-    // often, and the time of that reading. Null means there is no reading.
-    private var _steps as Number? = null;
-    private var _heartRate as Number? = null;
+    // The step count and heart rate as they show, read at most once a second as the face can redraw
+    // much more often, and the time of that reading
+    private var _stepsText as String = "--";
+    private var _heartRateText as String = "--";
     private var _readingsTime as Number = 0;
 
     // The heart's outline and where it was worked out for. It only changes when the heart moves, and
@@ -301,12 +301,26 @@ class MinimalismFaceView extends WatchUi.WatchFace {
         if (now != _readingsTime) {
             _readingsTime = now;
             if (Settings.fields.indexOf(Settings.FIELD_STEPS) != -1) {
-                _steps = ActivityMonitor.getInfo().steps;
+                _stepsText = stepsText(ActivityMonitor.getInfo().steps);
             }
             if (Settings.fields.indexOf(Settings.FIELD_HEART_RATE) != -1) {
-                _heartRate = readHeartRate();
+                var heartRate = readHeartRate();
+                _heartRateText = (heartRate != null) ? heartRate.toString() : "--";
             }
         }
+    }
+
+    // The step count as it shows: the number up to 999, then in half thousands, rounded down, e.g. "1K",
+    // "1.5K", "2K". "--" if there is no reading.
+    private function stepsText(steps as Number?) as String {
+        if (steps == null) {
+            return "--";
+        }
+        if (steps < 1000) {
+            return steps.toString();
+        }
+        var halves = steps / 500;
+        return (halves / 2).toString() + ((halves % 2 == 1) ? ".5K" : "K");
     }
 
     // The current heart rate, or else the newest one in the last 10 minutes of the watch's history.
@@ -371,12 +385,12 @@ class MinimalismFaceView extends WatchUi.WatchFace {
         dc.drawText(left + w / 2, top + h / 2, font, text, Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
     }
 
-    // Step count: two footprints and the number, e.g. "8421", centred on (x, y). The left foot is
+    // Step count: two footprints and the count, e.g. "1.5K", centred on (x, y). The left foot is
     // ahead of the right one, and each is an elongated sole with a smaller heel below it.
     private function drawSteps(dc as Dc, x as Numeric, y as Numeric) as Void {
         var height = rounded(dc.getFontHeight(Graphics.FONT_TINY) * 0.8);
         var width = rounded(height * 0.82);
-        var left = drawNumberAfterIcon(dc, x, y, _steps, width);
+        var left = drawTextAfterIcon(dc, x, y, _stepsText, width);
         var top = (y - height / 2.0 + 0.5).toNumber();
 
         var footHeight = rounded(height * 0.8);
@@ -400,7 +414,7 @@ class MinimalismFaceView extends WatchUi.WatchFace {
     private function drawHeartRate(dc as Dc, x as Numeric, y as Numeric) as Void {
         var size = rounded(dc.getFontHeight(Graphics.FONT_TINY) * 0.65);
         var halfWidth = rounded(size * 0.558);
-        var left = drawNumberAfterIcon(dc, x, y, _heartRate, 2 * halfWidth);
+        var left = drawTextAfterIcon(dc, x, y, _heartRateText, 2 * halfWidth);
         var top = (y - size / 2.0 + 0.5).toNumber();
 
         var outline = _heartOutline;
@@ -432,12 +446,10 @@ class MinimalismFaceView extends WatchUi.WatchFace {
         return outline;
     }
 
-    // Draws a number, or "--" if there is no reading, leaving room before it for an icon of the given
-    // width, so that together they are centred on (x, y). Returns where the icon goes, with the
-    // colour already set for it.
-    private function drawNumberAfterIcon(dc as Dc, x as Numeric, y as Numeric, value as Number?, iconWidth as Number) as Number {
+    // Draws a reading, leaving room before it for an icon of the given width, so that together they
+    // are centred on (x, y). Returns where the icon goes, with the colour already set for it.
+    private function drawTextAfterIcon(dc as Dc, x as Numeric, y as Numeric, text as String, iconWidth as Number) as Number {
         var font = Graphics.FONT_TINY;
-        var text = (value != null) ? value.toString() : "--";
         var gap = rounded(dc.getFontHeight(font) * 0.15);
         var left = (x - (iconWidth + gap + dc.getTextWidthInPixels(text, font)) / 2.0 + 0.5).toNumber();
 
