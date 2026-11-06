@@ -46,6 +46,10 @@ class MinimalismFaceView extends WatchUi.WatchFace {
     private var _heartLeft as Number = 0;
     private var _heartTop as Number = 0;
 
+    // Where the hour numbers go, worked out once as they never move and the face can redraw about 20
+    // times a second
+    private var _hourNumbers as Array<[Number, Number, String]>? = null;
+
     function initialize() {
         WatchFace.initialize();
         _rectangular = System.getDeviceSettings().screenShape == System.SCREEN_SHAPE_RECTANGLE;
@@ -205,7 +209,7 @@ class MinimalismFaceView extends WatchUi.WatchFace {
     }
 
     // Outer ring and a mark for every hour, or only the marks, or the marks with the numbers 12, 3, 6
-    // and 9 replacing theirs, or only those numbers, or nothing, as the Dial setting says. On
+    // and 9 replacing theirs, or all twelve numbers, or nothing, as the Dial setting says. On
     // rectangular screens the ring follows the screen's own rounded-rectangle shape, 6 px in from the
     // edge, and the marks and numbers run along it.
     private function drawDial(dc as Dc, cx as Number, cy as Number, radius as Number) as Void {
@@ -238,7 +242,7 @@ class MinimalismFaceView extends WatchUi.WatchFace {
                 }
             }
             if (numbers) {
-                drawHourNumbers(dc, cx, cy, reachX, reachY);
+                drawHourNumbers(dc, cx, cy, reachX, reachY, marks ? 3 : 1);
             }
             return;
         }
@@ -255,21 +259,45 @@ class MinimalismFaceView extends WatchUi.WatchFace {
             }
         }
         if (numbers) {
-            drawHourNumbers(dc, cx, cy, radius * 0.97, radius * 0.97);
+            drawHourNumbers(dc, cx, cy, radius * 0.97, radius * 0.97, marks ? 3 : 1);
         }
     }
 
-    // The numbers 12, 3, 6 and 9, each with its outer edge as far out as the marks reach: reachX to the
-    // sides, and reachY up and down
-    private function drawHourNumbers(dc as Dc, cx as Number, cy as Number, reachX as Numeric, reachY as Numeric) as Void {
+    // Draws every hour's number, or every third one (3, 6, 9 and 12), with its outer edge as far out as
+    // the marks reach: reachX to the sides, and reachY up and down
+    private function drawHourNumbers(dc as Dc, cx as Number, cy as Number, reachX as Numeric, reachY as Numeric, every as Number) as Void {
+        var places = _hourNumbers;
+        if (places == null) {
+            places = hourNumberPlaces(dc, cx, cy, reachX, reachY);
+            _hourNumbers = places;
+        }
+        dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
+        for (var i = every - 1; i < places.size(); i += every) {
+            var place = places[i];
+            dc.drawText(place[0], place[1], Graphics.FONT_TINY, place[2], Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
+        }
+    }
+
+    // Where the numbers 1 to 12 go, each as [x, y, text]: along its hour's direction, with its outer
+    // edge at the reach
+    private function hourNumberPlaces(dc as Dc, cx as Number, cy as Number, reachX as Numeric, reachY as Numeric) as Array<[Number, Number, String]> {
         var font = Graphics.FONT_TINY;
         // Digits are about 60% of the font's height, in the middle of it
         var halfDigit = dc.getFontHeight(font) * 0.3;
-        dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
-        dc.drawText(cx, cy - reachY + halfDigit, font, "12", Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
-        dc.drawText(cx + reachX, cy, font, "3", Graphics.TEXT_JUSTIFY_RIGHT | Graphics.TEXT_JUSTIFY_VCENTER);
-        dc.drawText(cx, cy + reachY - halfDigit, font, "6", Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
-        dc.drawText(cx - reachX, cy, font, "9", Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER);
+        var places = new [12] as Array<[Number, Number, String]>;
+        for (var hour = 1; hour <= 12; hour += 1) {
+            var text = hour.toString();
+            var halfWidth = dc.getTextWidthInPixels(text, font) / 2.0;
+            var angleDeg = 90 - hour * 30;
+            var rad = angleDeg * Math.PI / 180.0;
+            var cos = Math.cos(rad);
+            var sin = Math.sin(rad);
+            var distance = _rectangular
+                ? distanceToRoundedRect(angleDeg, reachX - halfWidth, reachY - halfDigit, 0)
+                : reachX - cos.abs() * halfWidth - sin.abs() * halfDigit;
+            places[hour - 1] = [rounded(cx + cos * distance), rounded(cy - sin * distance), text];
+        }
+        return places;
     }
 
     // The data fields in their places around the centre, as the settings have them
@@ -319,8 +347,7 @@ class MinimalismFaceView extends WatchUi.WatchFace {
         if (steps < 1000) {
             return steps.toString();
         }
-        var halves = steps / 500;
-        return (halves / 2).toString() + ((halves % 2 == 1) ? ".5K" : "K");
+        return (steps / 1000).toString() + "K";
     }
 
     // The current heart rate, or else the newest one in the last 10 minutes of the watch's history.
