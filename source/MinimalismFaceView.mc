@@ -310,8 +310,8 @@ class MinimalismFaceView extends WatchUi.WatchFace {
         }
     }
 
-    // The step count as it shows: the number up to 999, then in half thousands, rounded down, e.g. "1K",
-    // "1.5K", "2K". "--" if there is no reading.
+    // The step count as it shows: the number up to 999, then in whole thousands, rounded down, e.g. "1K",
+    // "6K", "12K". "--" if there is no reading.
     private function stepsText(steps as Number?) as String {
         if (steps == null) {
             return "--";
@@ -385,7 +385,7 @@ class MinimalismFaceView extends WatchUi.WatchFace {
         dc.drawText(left + w / 2, top + h / 2, font, text, Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
     }
 
-    // Step count: two footprints and the count, e.g. "1.5K", centred on (x, y). The left foot is
+    // Step count: two footprints and the count, e.g. "6K", centred on (x, y). The left foot is
     // ahead of the right one, and each is an elongated sole with a smaller heel below it.
     private function drawSteps(dc as Dc, x as Numeric, y as Numeric) as Void {
         var height = rounded(dc.getFontHeight(Graphics.FONT_TINY) * 0.8);
