@@ -24,6 +24,8 @@ No clutter: just the time, plus the data fields you want.
 
 On the Instinct Crossover AMOLED, the watch's own hands tell the time; the face adds the hour marks, data fields and red seconds hand.
 
+Enjoying the face? You can support its development with a donation: https://www.paypal.com/donate/?hosted_button_id=6XDD7G3PEFF4Y
+
 ## What's new
 
 1.5.0: Two new Dial choices: the hour marks with the numbers 12, 3, 6 and 9 replacing four of them, or all twelve numbers. The step count is more minimal: from 1,000 steps on it shows whole thousands, like 1K, 6K or 12K.
