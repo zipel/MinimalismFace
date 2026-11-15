@@ -1,5 +1,7 @@
 # MinimalismFace
 
+Shared rules for all the owner's Garmin apps are in `../AGENTS.md`. Claude Code loads it on its own; other tools should read it first. This file adds what is specific to this app, and wins where the two differ.
+
 A minimal analog Garmin Connect IQ watch face, written in Monkey C. It runs on about 100 colour watches from 2019 onward (`manifest.xml`, minApiLevel 1.2.0). The owner is new to Connect IQ, so explain CIQ concepts (sleep and always-on modes, AMOLED burn-in rules, monkeyc and monkeydo) when they come up.
 
 ## Where things are
@@ -23,7 +25,6 @@ The developer key is `../developer_key`. The SDK comes from `$CONNECTIQ_SDK` or 
 - Store package: `scripts/export.sh`, which writes `bin/MinimalismFace.iq`.
 - To build for every watch at once, add `-e -r` (about 180 builds for 110 watches). It should finish with 0 warnings.
 - Before committing, build with strict type checking: `"$SDK/bin/monkeyc" -d fenix847mm -f monkey.jungle -o bin/check.prg -y ../developer_key -l 3 -w`.
-- The project path contains a space, and monkeydo splits arguments at spaces. Run tools from the project folder with relative paths.
 
 ## Simulator quirks (SDK 9.3.0)
 - Only the first monkeydo run after a simulator restart responds. Quit the simulator (`osascript -e 'quit app "ConnectIQ"'`) before each run.
@@ -41,6 +42,4 @@ The developer key is `../developer_key`. The SDK comes from `$CONNECTIQ_SDK` or 
 - Still open: store screenshots (steps in `store/listing.md` under Images). They need the simulator on the owner's Mac, since the agent can't capture the screen.
 
 ## Working rules
-- Make one commit per change and push straight to `main`. Don't create feature branches. Leave the owner's uncommitted edits out of commits.
-- Keep reviews tightly scoped: name the files and questions, and limit the number of tool calls. Ask before starting any multi-agent review. An open-ended one once used about 1M tokens and found nothing.
-- Don't read `bin/`, screenshots or SDK binaries.
+- Keep reviews tightly scoped: name the files and questions, and limit the number of tool calls.
