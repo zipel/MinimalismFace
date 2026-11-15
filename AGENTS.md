@@ -22,6 +22,12 @@ The developer key is `../developer_key`. The SDK comes from `$CONNECTIQ_SDK` or 
 - There is one settings store per app, shared by every device, so test values carry over into the owner's own runs. Say what a test leaves behind.
 - The simulator reports steps as 0 and heart rate as 80. There's no screen capture permission, so the owner checks the rendering by eye.
 
+## Releases and the store
+- The owner's own watch is the fēnix 8 AMOLED 47mm (`fenix847mm`), so test there first.
+- The app version lives only in the top line of "What's new" in `store/listing.md` and in the version the owner types when uploading to the Connect IQ developer dashboard. `manifest.xml` has no app version, the face shows none, and there are no git tags. For a release, add a "What's new" line; there's nothing else to bump. The current release is 1.5.0.
+- `store/listing.md` holds the text the owner pastes into the dashboard by hand, so changes there don't reach the store until they do. The Description ends with a PayPal donation line; because of it the dashboard's monetization question may need a Yes.
+- Still open: store screenshots (steps in `store/listing.md` under Images). They need the simulator on the owner's Mac, since the agent can't capture the screen.
+
 ## Working rules
 - Make one commit per change and push straight to `main`. Don't create feature branches. Leave the owner's uncommitted edits out of commits.
 - Keep reviews tightly scoped: name the files and questions, and limit the number of tool calls. Ask before starting any multi-agent review. An open-ended one once used about 1M tokens and found nothing.
