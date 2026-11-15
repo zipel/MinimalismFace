@@ -1,6 +1,6 @@
 # MinimalismFace
 
-Shared rules for all the owner's Garmin apps are in `../AGENTS.md`. Claude Code loads it on its own; other tools should read it first. This file adds what is specific to this app, and wins where the two differ.
+Shared rules for all the owner's Garmin apps are in `../AGENTS.md`. Read it before starting, in Claude Code too: on 2026-11-15 Claude Code didn't load it on its own. This file adds what is specific to this app, and wins where the two differ.
 
 A minimal analog Garmin Connect IQ watch face, written in Monkey C. It runs on about 100 colour watches from 2019 onward (`manifest.xml`, minApiLevel 1.2.0).
 
