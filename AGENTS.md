@@ -2,7 +2,7 @@
 
 Shared rules for all the owner's Garmin apps are in `../AGENTS.md`. Claude Code loads it on its own; other tools should read it first. This file adds what is specific to this app, and wins where the two differ.
 
-A minimal analog Garmin Connect IQ watch face, written in Monkey C. It runs on about 100 colour watches from 2019 onward (`manifest.xml`, minApiLevel 1.2.0). The owner is new to Connect IQ, so explain CIQ concepts (sleep and always-on modes, AMOLED burn-in rules, monkeyc and monkeydo) when they come up.
+A minimal analog Garmin Connect IQ watch face, written in Monkey C. It runs on about 100 colour watches from 2019 onward (`manifest.xml`, minApiLevel 1.2.0).
 
 ## Where things are
 - `source/MinimalismFaceView.mc`: draws the dial, hands, data fields and the dimmed always-on face. It's about 600 lines, so search it rather than reading all of it.
@@ -40,6 +40,3 @@ The developer key is `../developer_key`. The SDK comes from `$CONNECTIQ_SDK` or 
 - `store/listing.md` holds the text the owner pastes into the dashboard by hand, so changes there don't reach the store until they do. The Description ends with a PayPal donation line, so the dashboard's monetization question needs a Yes. Garmin counts tips and donations, and a No can get the app delisted. A Yes puts a payment notice on the listing. The store has no donate button, only description text.
 - The Forerunner 45 (Connect IQ 1.4.5) and Swim 2 are left out: the settings need `Application.Properties` (CIQ 2.4) and `Menu2` (CIQ 3.0). Supporting them would mean a separate code path, so they stay out unless users ask.
 - Still open: store screenshots (steps in `store/listing.md` under Images). They need the simulator on the owner's Mac, since the agent can't capture the screen.
-
-## Working rules
-- Keep reviews tightly scoped: name the files and questions, and limit the number of tool calls.
