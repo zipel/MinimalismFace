@@ -24,7 +24,7 @@ No clutter: just the time, plus the data fields you want.
 
 On the Instinct Crossover AMOLED, the watch's own hands tell the time; the face adds the hour marks, data fields and red seconds hand.
 
-Enjoying the face? You can support its development with a donation: https://www.paypal.com/donate/?hosted_button_id=6XDD7G3PEFF4Y
+Enjoying this watch face? You can support its development with a donation: https://www.paypal.com/donate/?hosted_button_id=6XDD7G3PEFF4Y
 
 ## What's new
 
