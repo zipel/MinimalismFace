@@ -21,8 +21,8 @@ A minimal analog Garmin Connect IQ watch face, written in Monkey C. It runs on a
 
 ## Build and run
 The developer key is `../developer_key`. The SDK comes from `$CONNECTIQ_SDK` or the SDK Manager.
-- Simulator: `scripts/simulator.sh <product-id>`, for example `fenix847mm`. It builds `bin/simulator/MinimalismFace.prg` and keeps running until the face closes.
-- Store package: `scripts/export.sh`, which writes `bin/MinimalismFace.iq`.
+- Simulator: `tools/simulator.sh <product-id>`, for example `fenix847mm`. It builds `bin/simulator/MinimalismFace.prg` and keeps running until the face closes.
+- Store package: `tools/export.sh`, which writes `bin/MinimalismFace.iq`.
 - To build for every watch at once, add `-e -r` (about 180 builds for 110 watches). It should finish with 0 warnings.
 - Before committing, build with strict type checking: `"$SDK/bin/monkeyc" -d fenix847mm -f monkey.jungle -o bin/check.prg -y ../developer_key -l 3 -w`.
 

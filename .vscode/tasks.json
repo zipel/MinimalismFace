@@ -5,7 +5,7 @@
             "label": "Build & Run Simulator",
             "detail": "Builds the face for the watch you pick and shows it in the Connect IQ simulator",
             "type": "shell",
-            "command": "./scripts/simulator.sh",
+            "command": "./tools/simulator.sh",
             "args": [
                 "${command:monkeyc.getTargetDevice}",
                 "${config:monkeyC.developerKeyPath}"
@@ -22,7 +22,7 @@
             "label": "Export for Connect IQ Store",
             "detail": "Builds bin/MinimalismFace.iq, the file to upload to the Connect IQ Store",
             "type": "shell",
-            "command": "./scripts/export.sh",
+            "command": "./tools/export.sh",
             "args": [
                 "${config:monkeyC.developerKeyPath}"
             ],

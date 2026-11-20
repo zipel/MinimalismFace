@@ -1,7 +1,7 @@
 #!/bin/bash
 # Builds bin/MinimalismFace.iq, the package to upload to the Connect IQ Store.
 #
-# Usage: scripts/export.sh [developer-key]
+# Usage: tools/export.sh [developer-key]
 #   developer-key  path to your developer key; by default developer_key in the
 #                  folder that contains this project
 #

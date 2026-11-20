@@ -1,7 +1,7 @@
 #!/bin/bash
 # Builds the face for one watch and shows it in the Connect IQ simulator.
 #
-# Usage: scripts/simulator.sh <device> [developer-key]
+# Usage: tools/simulator.sh <device> [developer-key]
 #   device         the watch to simulate, e.g. fenix847mm (fēnix 8 AMOLED 47mm);
 #                  the product ids in manifest.xml are the choices
 #   developer-key  path to your developer key; by default developer_key in the

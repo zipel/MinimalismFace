@@ -14,13 +14,13 @@ Build & Run in the Simulator (command line)
 Build the .iq package for the Connect IQ Store:
 
 ```bash
-scripts/export.sh
+tools/export.sh
 ```
 
 Run the simulator for Fēnix 8 AMOLED 47mm (any product id from `manifest.xml` works):
 
 ```bash
-scripts/simulator.sh fenix847mm
+tools/simulator.sh fenix847mm
 ```
 
 The script builds the face for that watch, opens the simulator and sends the face to it with the SDK's `monkeydo` tool; the simulator only shows a watch once an app is sent to it. It keeps running, showing the face's output, until the face is closed.
@@ -37,8 +37,8 @@ VS Code Tasks
 
 Files added to help:
 - `.vscode/tasks.json` — the two tasks above.
-- `scripts/simulator.sh` — builds the face for one watch and shows it in the simulator.
-- `scripts/export.sh` — builds the package for the Connect IQ Store.
+- `tools/simulator.sh` — builds the face for one watch and shows it in the simulator.
+- `tools/export.sh` — builds the package for the Connect IQ Store.
 
 Install on a Fēnix 8 AMOLED 47mm device
 - The usual method for users is to publish the app through the Connect IQ Store and install it from Garmin Connect Mobile.
